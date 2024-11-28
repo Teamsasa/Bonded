@@ -1,14 +1,10 @@
 linters:
-  disable-all: true
+  disable-all: false
   enable:
-    - govet
-    - errcheck
-    - staticcheck
-    - unused
-    - gosimple
-    - varcheck
+    - gofumpt
+    - gci
+    - dupl
     - misspell
-    - lll
-    - gofumpt 
-    - goimports
-    - gofmt
+    - unconvert
+    - whitespace
+    - go-critic

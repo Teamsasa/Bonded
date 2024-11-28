@@ -15,9 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.22'
+      - name: Initialize Go modules
+        run: go mod tidy
       - uses: reviewdog/action-golangci-lint@v2
         with:
-          github_token: ${{ secrets.TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           go_version: ^1.22
           # Specify the operation mode of reviewdog
           reporter: github-pr-review

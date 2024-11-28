@@ -1,0 +1,7 @@
+# This file is used to configure the auto assign action
+addReviewers: true
+
+# Reviewers to add to the PR
+reviewers:
+  - Yutosaki
+  - muhi111

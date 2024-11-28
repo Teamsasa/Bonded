@@ -2,6 +2,7 @@ name: Run pull-requests workflow
 
 on:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read

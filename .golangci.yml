@@ -11,3 +11,4 @@ linters:
     - lll
     - gofumpt 
     - goimports
+    - gofmt

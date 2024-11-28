@@ -1,0 +1,26 @@
+# Workflow name
+name: lint 
+
+on:
+  workflow_call:
+
+# Job definition
+jobs:
+  golangci-lint:
+    # Permissions for GITHUB_TOKEN
+    permissions:
+      checks: write
+      contents: read
+      pull-requests: write 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: reviewdog/action-golangci-lint@v2
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          go_version: ^1.22
+          # Specify the operation mode of reviewdog
+          reporter: github-pr-review
+          # Specify the report level to Github Status
+          level: warning
+          golangci_lint_flags: "--config=.golangci.yml"

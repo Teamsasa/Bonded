@@ -1,0 +1,9 @@
+name: Run pull-requests workflow
+
+on:
+  pull_request:
+  
+jobs:
+  golangci-lint:
+    uses: ./.github/workflows/lint.yml
+    secrets: inherit

@@ -30,3 +30,4 @@ jobs:
           # Specify the report level to Github Status
           level: warning
           golangci_lint_flags: "--config=.golangci.yml"
+          fail_on_error: true

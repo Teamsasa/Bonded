@@ -2,6 +2,10 @@ name: Run pull-requests workflow
 
 on:
   pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
   
 jobs:
   golangci-lint:

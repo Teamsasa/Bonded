@@ -1,9 +1,12 @@
 .aws-sam
 .history
 
-# If you prefer the allow list template instead of the deny list, see community template:
-# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
-#
+# AWS SAM build output
+.aws-sam/
+
+# History files
+.history
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -24,5 +27,24 @@
 go.work
 go.work.sum
 
-# env file
+# Environment file
 .env
+
+# Go build output directories
+bin/
+pkg/
+
+# Log files
+*.log
+
+# Vim swap files
+*.swp
+
+# Backup files
+*.bak
+
+# Temporary files
+*.tmp
+
+# Backup of template.yaml
+template.yaml.bak

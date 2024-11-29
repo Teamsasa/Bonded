@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  bonded
+
+Globals:
+  Function:
+    Timeout: 5
+    MemorySize: 128
+
+Resources:
+  BondedFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures:
+        - arm64
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+      Environment:
+        Variables:
+          PARAM1: VALUE
+          DYNAMODB_ENDPOINT: http://host.docker.internal:8000
+    Metadata:
+      DockerTag: go-provided.al2-v1
+      DockerContext: ./bonded
+      Dockerfile: Dockerfile
+
+Outputs:
+  BondedAPI:
+    Description: "API Gateway endpoint URL for Prod environment for Bonded Function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/{proxy+}"
+  BondedFunction:
+    Description: "Bonded Lambda Function ARN"
+    Value: !GetAtt BondedFunction.Arn
+  BondedFunctionIamRole:
+    Description: "Implicit IAM Role created for Bonded function"
+    Value: !GetAtt BondedFunctionRole.Arn

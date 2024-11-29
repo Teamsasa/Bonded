@@ -1,28 +1,33 @@
-.PHONY: up down sam-api dynamodb build fmt
+.PHONY: help start-all stop-all start-sam-api start-dynamodb dynamodb-init build fmt
 
-# Start DynamoDB Local
-dynamodb:
+# Default target
+.DEFAULT_GOAL := help
+
+# Colors for output
+GREEN  := $(shell tput setaf 2)
+YELLOW := $(shell tput setaf 3)
+RESET  := $(shell tput sgr0)
+
+help: ## Display this help message
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-20s$(RESET) %s\n", $$1, $$2}'
+	@echo ''
+
+compose-up: ## Start Docker containers
 	docker-compose up -d
 
-# Initialize DynamoDB Local using an external script
-dynamodb-init:
+dynamodb-init: ## Initialize DynamoDB Local using an external script
 	@./init-dynamodb.sh
 
-# Start SAM API (change network name)
-sam-api:
+sam-api: ## Start SAM API
 	sam local start-api --docker-network bonded_default
 
-# Start both DynamoDB and SAM API
-up: dynamodb dynamodb-init sam-api
+start-all: compose-up dynamodb-init start-sam-api ## Start and initialize DynamoDB, then start SAM API
 
-# Stop and remove Docker containers
-down:
+compose-down: ## Stop and remove Docker containers
 	docker-compose down
 
-# Build SAM application
-build:
+build: ## Build SAM application
 	sam build
 
-# Format Go code
-fmt:
+fmt: ## Format all Go code files
 	@find . -name "*.go" -exec go fmt {} +

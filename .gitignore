@@ -48,3 +48,6 @@ pkg/
 
 # Backup of template.yaml
 template.yaml.bak
+
+# VS Code directories and files
+.vscode/

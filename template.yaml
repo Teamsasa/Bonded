@@ -27,7 +27,7 @@ Resources:
           DYNAMODB_ENDPOINT: http://host.docker.internal:8000
     Metadata:
       DockerTag: go-provided.al2-v1
-      DockerContext: ./bonded
+      DockerContext: .
       Dockerfile: Dockerfile
 
 Outputs:

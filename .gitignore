@@ -1,1 +1,50 @@
-.aws-sam
+# AWS SAM build output
+.aws-sam/
+
+# History files
+.history
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Environment file
+.env
+
+# Go build output directories
+bin/
+pkg/
+
+# Log files
+*.log
+
+# Vim swap files
+*.swp
+
+# Backup files
+*.bak
+
+# Temporary files
+*.tmp
+
+# Backup of template.yaml
+template.yaml.bak
+
+# VS Code directories and files
+.vscode/

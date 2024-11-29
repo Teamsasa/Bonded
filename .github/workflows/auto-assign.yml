@@ -1,7 +1,7 @@
 name: Run auto-assign workflow
 
 on:
-  pull_request:
+  workflow_call:
     types: [opened, ready_for_review]
   workflow_dispatch:
 

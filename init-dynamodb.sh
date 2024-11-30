@@ -19,13 +19,15 @@ if [ $? -ne 0 ]; then
         --global-secondary-indexes file://gsi.json \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
         --endpoint-url http://localhost:8000 \
-        --region ap-northeast-1
+        --region ap-northeast-1 \
+        >/dev/null 2>&1
     if [ $? -ne 0 ]; then
         echo "Failed to create table '$TABLE_NAME'. Exiting."
         exit 1
     fi
     echo "Waiting for the table to be active..."
-    aws dynamodb wait table-exists --table-name "$TABLE_NAME" --endpoint-url http://localhost:8000 --region ap-northeast-1
+    aws dynamodb wait table-exists --table-name "$TABLE_NAME" --endpoint-url http://localhost:8000 --region ap-northeast-1 \
+        >/dev/null 2>&1
     echo "Table '$TABLE_NAME' created successfully."
 else
     echo "Table '$TABLE_NAME' already exists. Skipping table creation."
@@ -37,7 +39,8 @@ aws dynamodb put-item \
   --table-name "$TABLE_NAME" \
   --item '{"ID": {"S": "1"}, "UserID": {"S": "user1"}, "Name": {"S": "Test User"}}' \
   --endpoint-url http://localhost:8000 \
-  --region ap-northeast-1
+  --region ap-northeast-1 \
+  >/dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo "Data inserted successfully."
 else

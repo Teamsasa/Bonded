@@ -21,7 +21,7 @@ dynamodb-init: ## Initialize DynamoDB Local using an external script
 sam-api: ## Start SAM API
 	sam local start-api --docker-network bonded_default
 
-start-all: compose-up dynamodb-init start-sam-api ## Start and initialize DynamoDB, then start SAM API
+start-all: compose-up dynamodb-init sam-api ## Start and initialize DynamoDB, then start SAM API
 
 compose-down: ## Stop and remove Docker containers
 	docker-compose down
@@ -30,4 +30,4 @@ build: ## Build SAM application
 	sam build
 
 fmt: ## Format all Go code files
-	@find . -name "*.go" -exec go fmt {} +
+	@go fmt ./...

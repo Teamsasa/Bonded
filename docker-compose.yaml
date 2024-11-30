@@ -1,9 +1,1 @@
-services:
-  dynamodb-local:
-    image: amazon/dynamodb-local
-    container_name: dynamodb-local
-    ports:
-      - "8000:8000"
-networks:
-  default:
-    driver: bridge
+# This file has been deleted as per the suggested change.

@@ -12,23 +12,29 @@ Resources:
   BondedFunction:
     Type: AWS::Serverless::Function
     Properties:
-      PackageType: Image
-      Architectures:
-        - arm64
-      Events:
-        CatchAll:
-          Type: Api
-          Properties:
-            Path: /{proxy+}
-            Method: ANY
+      CodeUri: main/  # CodeUri を現在のディレクトリに設定
+      PackageType: Zip # 画像パッケージではなくZipを使用
+      Handler: main    # Handler を main に設定
+      Runtime: go1.x
+      Timeout: 10 # タイムアウトを10秒に設定
+      MemorySize: 256
       Environment:
         Variables:
-          PARAM1: VALUE
-          DYNAMODB_ENDPOINT: http://host.docker.internal:8000
-    Metadata:
-      DockerTag: go-provided.al2-v1
-      DockerContext: .
-      Dockerfile: Dockerfile
+          DYNAMODB_ENDPOINT: "http://localhost:8000" # DynamoDBエンドポイントを環境変数として設定
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: "Calendars"
+      Events:
+        CalendarList:
+          Type: Api
+          Properties:
+            Path: /calendar/list
+            Method: GET
+        CalendarCreate:
+          Type: Api
+          Properties:
+            Path: /calendar/create
+            Method: POST
 
 Outputs:
   BondedAPI:

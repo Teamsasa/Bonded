@@ -32,7 +32,7 @@ func helloHandler(ctx context.Context, request events.APIGatewayProxyRequest) (e
 
 func dynamoDBTestHandler(ctx context.Context, _ events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	dynamoRepo := db.NewDynamoDB()
-	dynamoUsecase := usecase.NewDynamoDBUsecase(dynamoRepo)
+	dynamoUsecase := usecase.NewDynamoUsecase(dynamoRepo)
 	err := dynamoUsecase.DynamoDBTest(ctx)
 	if err != nil {
 		return events.APIGatewayProxyResponse{

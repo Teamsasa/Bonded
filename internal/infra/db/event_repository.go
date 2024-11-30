@@ -1,8 +1,8 @@
 package db
 
 import (
-	"context"
 	"bonded/internal/models"
+	"context"
 )
 
 type EventRepository interface {

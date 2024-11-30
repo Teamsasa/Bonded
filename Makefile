@@ -1,4 +1,4 @@
-.PHONY: help start-all stop-all start-sam-api start-dynamodb dynamodb-init build fmt
+.PHONY: help start-all stop-all start-sam-api start-dynamodb dynamodb-init build fmt clean
 
 # Default target
 .DEFAULT_GOAL := help
@@ -26,7 +26,7 @@ build: ## Build SAM application
 	sam build                          # SAMビルドを実行
 
 # 変更点:
-# - 不要なコマンドはありませんが、プロジェクトのクリーンアップを推奨します。
+# - 不��なコマンドはありませんが、プロジェクトのクリーンアップを推奨します。
 # - `cmd/bonded/main.go` を削除するか、別の用途に使用する場合は名前を変更してください。
 
 start-all: compose-up dynamodb-init build sam-api ## Start and initialize DynamoDB, build SAM application, then start SAM API
@@ -36,3 +36,7 @@ compose-down: ## Stop and remove Docker containers
 
 fmt: ## Format all Go code files
 	@go fmt ./...
+	@gofmt -s -w .
+
+clean: ## Clean build artifacts
+	rm -rf .aws-sam

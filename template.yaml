@@ -12,15 +12,15 @@ Resources:
   BondedFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: main/  # CodeUri を現在のディレクトリに設定
-      PackageType: Zip # 画像パッケージではなくZipを使用
-      Handler: main    # Handler を main に設定
+      CodeUri: main/        # ソースコードディレクトリ
+      PackageType: Zip
+      Handler: main         # バイナリ名
       Runtime: go1.x
-      Timeout: 10 # タイムアウトを10秒に設定
+      Timeout: 10
       MemorySize: 256
       Environment:
         Variables:
-          DYNAMODB_ENDPOINT: "http://localhost:8000" # DynamoDBエンドポイントを環境変数として設定
+          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
       Policies:
         - DynamoDBCrudPolicy:
             TableName: "Calendars"
@@ -35,6 +35,11 @@ Resources:
           Properties:
             Path: /calendar/create
             Method: POST
+        CalendarUpdate:                   # 新規追加
+          Type: Api
+          Properties:
+            Path: /calendar/update/{id}
+            Method: PUT
 
 Outputs:
   BondedAPI:

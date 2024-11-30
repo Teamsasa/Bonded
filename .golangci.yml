@@ -2,7 +2,6 @@ linters:
   disable-all: false
   enable:
     - gofumpt
-    - gci
     - dupl
     - misspell
     - unconvert

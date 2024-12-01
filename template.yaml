@@ -30,10 +30,10 @@ Resources:
           Properties:
             Path: /calendar/create
             Method: POST
-        CalendarUpdate:
+        CalendarEdit:
           Type: Api
           Properties:
-            Path: /calendar/update/{id}
+            Path: /calendar/edit/{id}
             Method: PUT
         Hello:
           Type: Api

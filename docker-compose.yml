@@ -10,4 +10,4 @@ services:
 
 networks:
   bonded_default:
-    external: true
+    driver: bridge

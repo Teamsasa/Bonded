@@ -7,10 +7,20 @@ import (
 	"github.com/google/uuid"
 )
 
-func CalendarUsecaseRequest(calendarRepo repository.CalendarRepository) CalendarUsecase {
-	return &calendarUsecase{
-		calendarRepo: calendarRepo,
+func CalendarUsecaseRequest(calendarRepo repository.CalendarRepository, eventRepo repository.EventRepository) Usecase {
+	return &usecase{
+		calendarUsecase: &calendarUsecase{
+			calendarRepo: calendarRepo,
+		},
+		eventUsecase: &eventUsecase{
+			eventRepo: eventRepo,
+		},
 	}
+}
+
+type Usecase interface {
+	Calendar() CalendarUsecase
+	Event() EventUsecase
 }
 
 type CalendarUsecase interface {
@@ -18,6 +28,24 @@ type CalendarUsecase interface {
 	EditCalendar(ctx context.Context, calendar *models.Calendar) error
 	DeleteCalendar(ctx context.Context, calendarID string) error
 	FindCalendars(ctx context.Context, userID string) ([]*models.Calendar, error)
+}
+
+type EventUsecase interface {
+	CreateEvent(ctx context.Context, event *models.Event) error
+	FindEvent(ctx context.Context, eventID string) (*models.Event, error)
+}
+
+type usecase struct {
+	calendarUsecase CalendarUsecase
+	eventUsecase    EventUsecase
+}
+
+func (u *usecase) Calendar() CalendarUsecase {
+	return u.calendarUsecase
+}
+
+func (u *usecase) Event() EventUsecase {
+	return u.eventUsecase
 }
 
 type calendarUsecase struct {
@@ -39,4 +67,17 @@ func (u *calendarUsecase) DeleteCalendar(ctx context.Context, calendarID string)
 
 func (u *calendarUsecase) FindCalendars(ctx context.Context, userID string) ([]*models.Calendar, error) {
 	return u.calendarRepo.FindByUserID(ctx, userID)
+}
+
+type eventUsecase struct {
+	eventRepo repository.EventRepository
+}
+
+func (u *eventUsecase) CreateEvent(ctx context.Context, event *models.Event) error {
+	event.ID = uuid.New().String()
+	return u.eventRepo.Create(ctx, event)
+}
+
+func (u *eventUsecase) FindEvent(ctx context.Context, eventID string) (*models.Event, error) {
+	return u.eventRepo.FindByEventID(ctx, eventID)
 }

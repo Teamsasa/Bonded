@@ -10,10 +10,7 @@
 
 下記コマンドでアプリケーションをBuild、起動します。
 ```sh
-# Build
-make build
-
-# run
+# build & run
 make start-all
 ```
 

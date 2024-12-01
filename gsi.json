@@ -1,0 +1,15 @@
+[
+  {
+    "IndexName": "UserID-index",
+    "KeySchema": [
+      { "AttributeName": "UserID", "KeyType": "HASH" }
+    ],
+    "Projection": {
+      "ProjectionType": "ALL"
+    },
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 5,
+      "WriteCapacityUnits": 5
+    }
+  }
+]

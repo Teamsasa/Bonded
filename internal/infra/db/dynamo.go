@@ -28,7 +28,7 @@ func (db *DynamoDB) DescribeSampleTable(ctx context.Context) error {
 	svc := dynamodb.New(sess)
 
 	input := &dynamodb.DescribeTableInput{
-		TableName: aws.String("sampleTable"),
+		TableName: aws.String("Calendars"),
 	}
 
 	_, err := svc.DescribeTableWithContext(ctx, input)

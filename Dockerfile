@@ -1,12 +1,11 @@
 FROM public.ecr.aws/docker/library/golang:1.19 as build-image
 WORKDIR /src
 
-COPY go.mod go.sum ./
 COPY . ./
 
-RUN go mod tidy
+RUN go mod download
 
-WORKDIR /src/cmd/bonded
+WORKDIR /src/main
 RUN go build -o /src/lambda-handler
 
 FROM public.ecr.aws/lambda/provided:al2

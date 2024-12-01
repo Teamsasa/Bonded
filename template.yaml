@@ -13,18 +13,38 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
-      Architectures:
-        - arm64
-      Events:
-        CatchAll:
-          Type: Api
-          Properties:
-            Path: /{proxy+}
-            Method: ANY
       Environment:
         Variables:
-          PARAM1: VALUE
-          DYNAMODB_ENDPOINT: http://host.docker.internal:8000
+          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: "Calendars"
+      Events:
+        CalendarList:
+          Type: Api
+          Properties:
+            Path: /calendar/list
+            Method: GET
+        CalendarCreate:
+          Type: Api
+          Properties:
+            Path: /calendar/create
+            Method: POST
+        CalendarEdit:
+          Type: Api
+          Properties:
+            Path: /calendar/edit/{id}
+            Method: PUT
+        Hello:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: GET
+        DynamoDBTest:
+          Type: Api
+          Properties:
+            Path: /dynamodb-test
+            Method: GET
     Metadata:
       DockerTag: go-provided.al2-v1
       DockerContext: .

@@ -17,8 +17,8 @@ type calendarRepository struct {
 }
 
 type CalendarRepository interface {
-	Save(ctx context.Context, calendar *models.Calendar) error
-	Update(ctx context.Context, calendar *models.Calendar) error
+	Create(ctx context.Context, calendar *models.Calendar) error
+	Edit(ctx context.Context, calendar *models.Calendar) error
 	Delete(ctx context.Context, calendarID string) error
 	FindByID(ctx context.Context, calendarID string) (*models.Calendar, error)
 	FindByUserID(ctx context.Context, userID string) ([]*models.Calendar, error)
@@ -31,7 +31,7 @@ func CalendarRepositoryRequest(dynamoClient *db.DynamoDBClient) CalendarReposito
 	}
 }
 
-func (r *calendarRepository) Save(ctx context.Context, calendar *models.Calendar) error {
+func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calendar) error {
 	item, err := dynamodbattribute.MarshalMap(calendar)
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (r *calendarRepository) Save(ctx context.Context, calendar *models.Calendar
 	return err
 }
 
-func (r *calendarRepository) Update(ctx context.Context, calendar *models.Calendar) error {
+func (r *calendarRepository) Edit(ctx context.Context, calendar *models.Calendar) error {
 	item, err := dynamodbattribute.MarshalMap(calendar)
 	if err != nil {
 		return err

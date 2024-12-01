@@ -67,7 +67,7 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 		Body:       `{"message":"Calendar created successfully."}`,
 	}, nil
 }
-func (h *Handler) HandlePutCalendarUpdate(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id := request.PathParameters["id"]
 
 	var input struct {
@@ -90,17 +90,17 @@ func (h *Handler) HandlePutCalendarUpdate(ctx context.Context, request events.AP
 	}
 
 	calendar.Name = input.Name
-	err = h.Repo.Update(ctx, calendar)
+	err = h.Repo.Edit(ctx, calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
-			Body:       "Failed to update calendar",
+			Body:       "Failed to edit calendar",
 		}, nil
 	}
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       `{"message":"Calendar updated successfully."}`,
+		Body:       `{"message":"Calendar edited successfully."}`,
 	}, nil
 }
 

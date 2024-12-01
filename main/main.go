@@ -35,9 +35,9 @@ func main() {
 			if request.HTTPMethod == "POST" {
 				return h.HandleCreateCalendar(ctx, request)
 			}
-		case "/calendar/update/" + request.PathParameters["id"]:
+		case "/calendar/edit/" + request.PathParameters["id"]:
 			if request.HTTPMethod == "PUT" {
-				return h.HandlePutCalendarUpdate(ctx, request)
+				return h.HandlePutCalendarEdit(ctx, request)
 			}
 		}
 		return events.APIGatewayProxyResponse{

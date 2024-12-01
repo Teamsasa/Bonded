@@ -3,17 +3,19 @@ package handler
 import (
 	"bonded/internal/infra/db"
 	"bonded/internal/models"
-	"bonded/internal/usecase"
+	"bonded/usecase"
 	"context"
 	"encoding/json"
 
 	"github.com/aws/aws-lambda-go/events"
 )
 
+// Handler 構造体はリポジトリを保持します。
 type Handler struct {
 	Repo db.CalendarRepository
 }
 
+// HandleGetCalendars は GET /calendar/list のハンドラーです。
 func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	userID := request.QueryStringParameters["userId"]
 	calendars, err := h.Repo.FindByUserID(ctx, userID)
@@ -36,6 +38,7 @@ func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGate
 	}, nil
 }
 
+// HandleCreateCalendar は POST /calendar/create のハンドラーです。
 func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	var calendar models.Calendar
 	err := json.Unmarshal([]byte(request.Body), &calendar)
@@ -58,6 +61,7 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 	}, nil
 }
 
+// HandlePutCalendarUpdate は PUT /calendar/update/{id} のハンドラーです。
 func (h *Handler) HandlePutCalendarUpdate(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id := request.PathParameters["id"]
 
@@ -95,6 +99,7 @@ func (h *Handler) HandlePutCalendarUpdate(ctx context.Context, request events.AP
 	}, nil
 }
 
+// HelloHandler は GET /hello のハンドラーです。
 func (h *Handler) HelloHandler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	greeting := usecase.GetGreeting(ctx, request.RequestContext.Identity.SourceIP)
 	return events.APIGatewayProxyResponse{
@@ -103,6 +108,7 @@ func (h *Handler) HelloHandler(ctx context.Context, request events.APIGatewayPro
 	}, nil
 }
 
+// DynamoDBTestHandler は GET /dynamodb-test のハンドラーです。
 func (h *Handler) DynamoDBTestHandler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	dynamoRepo := db.NewDynamoDB()
 	dynamoUsecase := usecase.NewDynamoUsecase(dynamoRepo)

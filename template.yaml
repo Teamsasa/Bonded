@@ -12,12 +12,7 @@ Resources:
   BondedFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: main/        # ソースコードディレクトリ
-      PackageType: Zip
-      Handler: main         # バイナリ名
-      Runtime: go1.x
-      Timeout: 10
-      MemorySize: 256
+      PackageType: Image
       Environment:
         Variables:
           DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
@@ -50,6 +45,10 @@ Resources:
           Properties:
             Path: /dynamodb-test
             Method: GET
+    Metadata:
+      DockerTag: go-provided.al2-v1
+      DockerContext: .
+      Dockerfile: Dockerfile
 
 Outputs:
   BondedAPI:

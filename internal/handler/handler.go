@@ -7,7 +7,6 @@ import (
 	"bonded/internal/usecase"
 	"context"
 	"encoding/json"
-	"github.com/google/uuid"
 
 	"github.com/aws/aws-lambda-go/events"
 )
@@ -55,8 +54,6 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 			Body:       "Invalid request payload",
 		}, nil
 	}
-
-	calendar.ID = uuid.New().String()
 
 	err = h.Usecase.CreateCalendar(ctx, &calendar)
 	if err != nil {

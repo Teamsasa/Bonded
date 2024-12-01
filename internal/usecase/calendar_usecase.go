@@ -4,6 +4,7 @@ import (
 	"bonded/internal/models"
 	"bonded/internal/repository"
 	"context"
+	"github.com/google/uuid"
 )
 
 func CalendarUsecaseRequest(calendarRepo repository.CalendarRepository) CalendarUsecase {
@@ -30,6 +31,7 @@ func NewCalendarUsecase(calendarRepo repository.CalendarRepository) CalendarUsec
 }
 
 func (u *calendarUsecase) CreateCalendar(ctx context.Context, calendar *models.Calendar) error {
+	calendar.ID = uuid.New().String()
 	return u.calendarRepo.Save(ctx, calendar)
 }
 

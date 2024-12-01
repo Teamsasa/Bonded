@@ -6,7 +6,7 @@ services:
       - "8000:8000"
     command: "-jar DynamoDBLocal.jar -inMemory -sharedDb"
     networks:
-      - bonded_default
+      - default
 
 networks:
   bonded_default:

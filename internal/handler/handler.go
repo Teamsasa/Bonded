@@ -13,13 +13,15 @@ import (
 
 type Handler struct {
 	Repo    repository.CalendarRepository
-	Usecase usecase.CalendarUsecase
+	CalendearUsecase usecase.CalendarUsecase
+	EventUsecase usecase.EventUsecase
 }
 
-func HandlerRequest(repo repository.CalendarRepository, usecase usecase.CalendarUsecase) *Handler {
+func HandlerRequest(repo repository.CalendarRepository, usecase usecase.Usecase) *Handler {
 	return &Handler{
 		Repo:    repo,
-		Usecase: usecase,
+		CalendearUsecase: usecase.Calendar(),
+		EventUsecase: usecase.Event(),
 	}
 }
 
@@ -55,7 +57,7 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 		}, nil
 	}
 
-	err = h.Usecase.CreateCalendar(ctx, &calendar)
+	err = h.CalendearUsecase.CreateCalendar(ctx, &calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -67,6 +69,7 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 		Body:       `{"message":"Calendar created successfully."}`,
 	}, nil
 }
+
 func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id := request.PathParameters["id"]
 
@@ -104,6 +107,22 @@ func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIG
 	}, nil
 }
 
+func (h *Handler) HandleDeleteCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	id := request.PathParameters["id"]
+
+	err := h.Repo.Delete(ctx, id)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Failed to delete calendar",
+		}, nil
+	}
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       `{"message":"Calendar deleted successfully."}`,
+	}, nil
+}
+
 func (h *Handler) HelloHandler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	greeting := usecase.GetGreeting(ctx, request.RequestContext.Identity.SourceIP)
 	return events.APIGatewayProxyResponse{
@@ -125,5 +144,52 @@ func (h *Handler) DynamoDBTestHandler(ctx context.Context, request events.APIGat
 	return events.APIGatewayProxyResponse{
 		Body:       "Successfully accessed DynamoDB table",
 		StatusCode: 200,
+	}, nil
+}
+
+// 一旦、個別取得のみ。userIDから一覧取得とかもあった方がいいかも
+func (h *Handler) HandleGetEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	eventID := request.QueryStringParameters["eventId"]
+	event, err := h.EventUsecase.FindEvent(ctx, eventID)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error finding calendars: " + err.Error(),
+		}, nil
+	}
+
+	body, err := json.Marshal(event)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error marshalling response: " + err.Error(),
+		}, nil
+	}
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       string(body),
+	}, nil
+}
+
+func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var event models.Event
+	err := json.Unmarshal([]byte(request.Body), &event)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid request payload",
+		}, nil
+	}
+
+	err = h.EventUsecase.CreateEvent(ctx, &event)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error saving calendar: " + err.Error(),
+		}, nil
+	}
+	return events.APIGatewayProxyResponse{
+		StatusCode: 201,
+		Body:       `{"message":"Calendar created successfully."}`,
 	}, nil
 }

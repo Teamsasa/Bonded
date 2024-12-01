@@ -24,12 +24,6 @@ type calendarUsecase struct {
 	calendarRepo repository.CalendarRepository
 }
 
-func NewCalendarUsecase(calendarRepo repository.CalendarRepository) CalendarUsecase {
-	return &calendarUsecase{
-		calendarRepo: calendarRepo,
-	}
-}
-
 func (u *calendarUsecase) CreateCalendar(ctx context.Context, calendar *models.Calendar) error {
 	calendar.ID = uuid.New().String()
 	return u.calendarRepo.Create(ctx, calendar)

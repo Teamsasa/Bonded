@@ -35,11 +35,21 @@ Resources:
           Properties:
             Path: /calendar/create
             Method: POST
-        CalendarUpdate:                   # 新規追加
+        CalendarUpdate:
           Type: Api
           Properties:
             Path: /calendar/update/{id}
             Method: PUT
+        Hello:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: GET
+        DynamoDBTest:
+          Type: Api
+          Properties:
+            Path: /dynamodb-test
+            Method: GET
 
 Outputs:
   BondedAPI:

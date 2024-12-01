@@ -14,7 +14,8 @@ import (
 func main() {
 	dynamoClient := db.DynamoDBClientRequest()
 	calendarRepo := repository.CalendarRepositoryRequest(dynamoClient)
-	appUsecase := usecase.CalendarUsecaseRequest(calendarRepo)
+	eventRepo := repository.EventRepositoryRequest(dynamoClient)
+	appUsecase := usecase.CalendarUsecaseRequest(calendarRepo, eventRepo)
 	h := handler.HandlerRequest(calendarRepo, appUsecase)
 
 	lambda.Start(func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -38,6 +39,18 @@ func main() {
 		case "/calendar/edit/" + request.PathParameters["id"]:
 			if request.HTTPMethod == "PUT" {
 				return h.HandlePutCalendarEdit(ctx, request)
+			}
+		case "/calendar/delete/" + request.PathParameters["id"]:
+			if request.HTTPMethod == "DELETE" {
+				return h.HandleDeleteCalendar(ctx, request)
+			}
+		case "/event/create":
+			if request.HTTPMethod == "POST" {
+				return h.HandleCreateEvent(ctx, request)
+			}
+		case "/event/" + request.PathParameters["id"]:
+			if request.HTTPMethod == "GET" {
+				return h.HandleGetEvent(ctx, request)
 			}
 		}
 		return events.APIGatewayProxyResponse{

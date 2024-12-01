@@ -25,10 +25,6 @@ build: ## Build SAM application
 	go mod tidy                        # 依存関係を整理
 	sam build                          # SAMビルドを実行
 
-# 変更点:
-# - 不��なコマンドはありませんが、プロジェクトのクリーンアップを推奨します。
-# - `cmd/bonded/main.go` を削除するか、別の用途に使用する場合は名前を変更してください。
-
 start-all: compose-up dynamodb-init build sam-api ## Start and initialize DynamoDB, build SAM application, then start SAM API
 
 compose-down: ## Stop and remove Docker containers
@@ -36,7 +32,6 @@ compose-down: ## Stop and remove Docker containers
 
 fmt: ## Format all Go code files
 	@go fmt ./...
-	@gofmt -s -w .
 
 clean: ## Clean build artifacts
 	rm -rf .aws-sam

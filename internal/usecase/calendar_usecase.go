@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"bonded/internal/repository"
 	"bonded/internal/models"
+	"bonded/internal/repository"
 	"context"
 )
 

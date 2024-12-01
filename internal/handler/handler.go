@@ -3,8 +3,8 @@ package handler
 import (
 	"bonded/internal/infra/db"
 	"bonded/internal/models"
-	"bonded/internal/usecase"
 	"bonded/internal/repository"
+	"bonded/internal/usecase"
 	"context"
 	"encoding/json"
 	"github.com/google/uuid"
@@ -12,15 +12,14 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 )
 
-
 type Handler struct {
-	Repo repository.CalendarRepository
+	Repo    repository.CalendarRepository
 	Usecase usecase.CalendarUsecase
 }
 
 func HandlerRequest(repo repository.CalendarRepository, usecase usecase.CalendarUsecase) *Handler {
 	return &Handler{
-		Repo: repo,
+		Repo:    repo,
 		Usecase: usecase,
 	}
 }

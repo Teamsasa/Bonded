@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/google/uuid"
 )
 
 type eventRepository struct {
@@ -34,7 +33,6 @@ func (r *eventRepository) Create(ctx context.Context, event *models.Event) error
 	if err != nil {
 		return err
 	}
-	event.ID = uuid.New().String()
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(r.tableName),
 		Item:      item,

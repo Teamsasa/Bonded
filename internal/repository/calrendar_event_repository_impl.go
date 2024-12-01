@@ -17,7 +17,6 @@ type EventRepository interface {
 // 	repo *EventRepository
 // }
 
-
 // func (r *eventRepository) Cretae(ctx context.Context, event *models.Event) error {
 // 	// イベントを保存する処理
 // 	return nil

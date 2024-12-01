@@ -190,6 +190,6 @@ func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatew
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
-		Body:       `{"message":"イベントが正常に作成されました。"}`,
+		Body:       `{"message":"イベントが正常に作成されました "}` + event.ID,
 	}, nil
 }

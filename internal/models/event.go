@@ -3,12 +3,12 @@ package models
 import "time"
 
 type Event struct {
-	ID          string `json:"id"`
-	Title       string `json:"title"`
-	Description string
-	CalendarID  string `json:"calendar_id"`
-	StartTime   time.Time `json:"start_time"`
-	EndTime     time.Time `json:"end_time"`
-	Location    string
-	AllDay      bool
+	ID          string    `json:"id,omitempty" dynamodbav:"ID"`
+	Title       string    `json:"title" dynamodbav:"Title"`
+	Description string    `json:"description" dynamodbav:"Description"`
+	CalendarID  string    `json:"calendar_id" dynamodbav:"CalendarID"`
+	StartTime   time.Time `json:"start_time" dynamodbav:"StartTime"`
+	EndTime     time.Time `json:"end_time" dynamodbav:"EndTime"`
+	Location    string    `json:"location" dynamodbav:"Location"`
+	AllDay      bool      `json:"all_day" dynamodbav:"AllDay"`
 }

@@ -3,6 +3,8 @@ package main
 import (
 	"bonded/internal/handler"
 	"bonded/internal/infra/db"
+	"bonded/internal/repository"
+	"bonded/internal/usecase"
 	"context"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -10,10 +12,10 @@ import (
 )
 
 func main() {
-	repo := db.NewCalendarRepository()
-	h := &handler.Handler{
-		Repo: repo,
-	}
+	dynamoClient := db.DynamoDBClientRequest()
+	calendarRepo := repository.CalendarRepositoryRequest(dynamoClient)
+	appUsecase := usecase.CalendarUsecaseRequest(calendarRepo)
+	h := handler.HandlerRequest(calendarRepo, appUsecase)
 
 	lambda.Start(func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 		switch request.Path {

@@ -1,10 +1,16 @@
 package usecase
 
 import (
-	"bonded/internal/infra/db"
 	"bonded/internal/models"
+	"bonded/internal/repository"
 	"context"
 )
+
+func EventUsecaseRequest(eventRepo repository.EventRepository) EventUsecase {
+	return &eventUsecase{
+		eventRepo: eventRepo,
+	}
+}
 
 type EventUsecase interface {
 	CreateEvent(ctx context.Context, event *models.Event) error
@@ -14,13 +20,7 @@ type EventUsecase interface {
 }
 
 type eventUsecase struct {
-	eventRepo db.EventRepository
-}
-
-func NewEventUsecase(eventRepo db.EventRepository) EventUsecase {
-	return &eventUsecase{
-		eventRepo: eventRepo,
-	}
+	eventRepo repository.EventRepository
 }
 
 func (u *eventUsecase) CreateEvent(ctx context.Context, event *models.Event) error {

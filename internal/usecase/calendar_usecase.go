@@ -1,10 +1,16 @@
 package usecase
 
 import (
-	"bonded/internal/infra/db"
+	"bonded/internal/repository"
 	"bonded/internal/models"
 	"context"
 )
+
+func CalendarUsecaseRequest(calendarRepo repository.CalendarRepository) CalendarUsecase {
+	return &calendarUsecase{
+		calendarRepo: calendarRepo,
+	}
+}
 
 type CalendarUsecase interface {
 	CreateCalendar(ctx context.Context, calendar *models.Calendar) error
@@ -14,10 +20,10 @@ type CalendarUsecase interface {
 }
 
 type calendarUsecase struct {
-	calendarRepo db.CalendarRepository
+	calendarRepo repository.CalendarRepository
 }
 
-func NewCalendarUsecase(calendarRepo db.CalendarRepository) CalendarUsecase {
+func NewCalendarUsecase(calendarRepo repository.CalendarRepository) CalendarUsecase {
 	return &calendarUsecase{
 		calendarRepo: calendarRepo,
 	}

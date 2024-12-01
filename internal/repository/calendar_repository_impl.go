@@ -1,16 +1,20 @@
-package db
+package repository
 
 import (
+	"bonded/internal/infra/db"
+	"bonded/internal/models"
 	"context"
 	"fmt"
-	"os"
 
-	"bonded/internal/models"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
+
+type calendarRepository struct {
+	dynamoDB  *dynamodb.DynamoDB
+	tableName string
+}
 
 type CalendarRepository interface {
 	Save(ctx context.Context, calendar *models.Calendar) error
@@ -20,22 +24,9 @@ type CalendarRepository interface {
 	FindByUserID(ctx context.Context, userID string) ([]*models.Calendar, error)
 }
 
-type calendarRepository struct {
-	dynamoDB  *dynamodb.DynamoDB
-	tableName string
-}
-
-func NewCalendarRepository() CalendarRepository {
-	endpoint := os.Getenv("DYNAMODB_ENDPOINT")
-	if endpoint == "" {
-		endpoint = "http://localhost:8000" // デフォルトエンドポイント
-	}
-	sess := session.Must(session.NewSession(&aws.Config{
-		Region:   aws.String("ap-northeast-1"),
-		Endpoint: aws.String(endpoint),
-	}))
+func CalendarRepositoryRequest(dynamoClient *db.DynamoDBClient) CalendarRepository {
 	return &calendarRepository{
-		dynamoDB:  dynamodb.New(sess),
+		dynamoDB:  dynamoClient.Client,
 		tableName: "Calendars",
 	}
 }

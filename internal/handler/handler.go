@@ -4,14 +4,25 @@ import (
 	"bonded/internal/infra/db"
 	"bonded/internal/models"
 	"bonded/internal/usecase"
+	"bonded/internal/repository"
 	"context"
 	"encoding/json"
+	"github.com/google/uuid"
 
 	"github.com/aws/aws-lambda-go/events"
 )
 
+
 type Handler struct {
-	Repo db.CalendarRepository
+	Repo repository.CalendarRepository
+	Usecase usecase.CalendarUsecase
+}
+
+func HandlerRequest(repo repository.CalendarRepository, usecase usecase.CalendarUsecase) *Handler {
+	return &Handler{
+		Repo: repo,
+		Usecase: usecase,
+	}
 }
 
 func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -45,7 +56,10 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 			Body:       "Invalid request payload",
 		}, nil
 	}
-	err = h.Repo.Save(ctx, &calendar)
+
+	calendar.ID = uuid.New().String()
+
+	err = h.Usecase.CreateCalendar(ctx, &calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -53,11 +67,10 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 		}, nil
 	}
 	return events.APIGatewayProxyResponse{
-		StatusCode: 200,
+		StatusCode: 201,
 		Body:       `{"message":"Calendar created successfully."}`,
 	}, nil
 }
-
 func (h *Handler) HandlePutCalendarUpdate(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	id := request.PathParameters["id"]
 
@@ -105,7 +118,7 @@ func (h *Handler) HelloHandler(ctx context.Context, request events.APIGatewayPro
 
 func (h *Handler) DynamoDBTestHandler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	dynamoRepo := db.NewDynamoDB()
-	dynamoUsecase := usecase.NewDynamoUsecase(dynamoRepo)
+	dynamoUsecase := usecase.DynamoUsecaseRequest(dynamoRepo)
 	err := dynamoUsecase.DynamoDBTest(ctx)
 	if err != nil {
 		return events.APIGatewayProxyResponse{

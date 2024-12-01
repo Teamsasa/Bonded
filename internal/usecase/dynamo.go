@@ -5,16 +5,16 @@ import (
 	"context"
 )
 
+func DynamoUsecaseRequest(dynamo db.IDynamoDB) IDynamoUsecase {
+	return &DynamoUsecase{dynamo: dynamo}
+}
+
 type IDynamoUsecase interface {
 	DynamoDBTest(ctx context.Context) error
 }
 
 type DynamoUsecase struct {
 	dynamo db.IDynamoDB
-}
-
-func NewDynamoUsecase(dynamo db.IDynamoDB) IDynamoUsecase {
-	return &DynamoUsecase{dynamo: dynamo}
 }
 
 func (u *DynamoUsecase) DynamoDBTest(ctx context.Context) error {

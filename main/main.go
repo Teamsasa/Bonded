@@ -28,7 +28,11 @@ func main() {
 			if request.HTTPMethod == "GET" {
 				return h.DynamoDBTestHandler(ctx, request)
 			}
-		case "/calendar/list":
+		case "/calendar/" + request.PathParameters["calendarId"]:
+			if request.HTTPMethod == "GET" {
+				return h.HandleGetCalendar(ctx, request)
+			}
+		case "/calendar/list/" + request.PathParameters["userId"]:
 			if request.HTTPMethod == "GET" {
 				return h.HandleGetCalendars(ctx, request)
 			}
@@ -38,7 +42,7 @@ func main() {
 			}
 		case "/calendar/edit/" + request.PathParameters["calendarId"]:
 			if request.HTTPMethod == "PUT" {
-				return h.HandlePutCalendarEdit(ctx, request)
+				return h.HandleEditCalendar(ctx, request)
 			}
 		case "/calendar/delete/" + request.PathParameters["calendarId"]:
 			if request.HTTPMethod == "DELETE" {

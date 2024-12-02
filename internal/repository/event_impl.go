@@ -9,36 +9,19 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
-func (r *eventRepository) Create(ctx context.Context, event *models.Event) error {
-	item, err := dynamodbattribute.MarshalMap(event)
-	if err != nil {
-		return err
-	}
-	input := &dynamodb.PutItemInput{
-		TableName: aws.String(r.tableName),
-		Item:      item,
-	}
-	_, err = r.dynamoDB.PutItemWithContext(ctx, input)
-	return err
-}
+func (r *eventRepository) CreateEvent(ctx context.Context, calendar *models.Calendar, event *models.Event) error {
+    calendar.Event = append(calendar.Event, *event)
 
-func (r *eventRepository) FindByEventID(ctx context.Context, eventID string) (*models.Event, error) {
-	input := &dynamodb.GetItemInput{
-		TableName: aws.String(r.tableName),
-		Key: map[string]*dynamodb.AttributeValue{
-			"EventID": {
-				S: aws.String(eventID),
-			},
-		},
-	}
-	result, err := r.dynamoDB.GetItemWithContext(ctx, input)
-	if err != nil {
-		return nil, err
-	}
-	var event models.Event
-	err = dynamodbattribute.UnmarshalMap(result.Item, &event)
-	if err != nil {
-		return nil, err
-	}
-	return &event, nil
+    item, err := dynamodbattribute.MarshalMap(calendar)
+    if err != nil {
+        return err
+    }
+
+    input := &dynamodb.PutItemInput{
+        TableName: aws.String(r.tableName),
+        Item:      item,
+    }
+
+    _, err = r.dynamoDB.PutItemWithContext(ctx, input)
+    return err
 }

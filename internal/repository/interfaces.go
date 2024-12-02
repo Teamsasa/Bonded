@@ -15,7 +15,7 @@ type eventRepository struct {
 func EventRepositoryRequest(dynamoClient *db.DynamoDBClient) EventRepository {
 	return &eventRepository{
 		dynamoDB:  dynamoClient.Client,
-		tableName: "Events",
+		tableName: "Calendars",
 	}
 }
 
@@ -40,6 +40,5 @@ type CalendarRepository interface {
 }
 
 type EventRepository interface {
-	Create(ctx context.Context, event *models.Event) error
-	FindByEventID(ctx context.Context, eventID string) (*models.Event, error)
+	CreateEvent(ctx context.Context,calendar *models.Calendar, event *models.Event) error
 }

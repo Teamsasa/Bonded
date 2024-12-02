@@ -52,6 +52,5 @@ type CalendarUsecase interface {
 }
 
 type EventUsecase interface {
-	CreateEvent(ctx context.Context, event *models.Event) error
-	FindEvent(ctx context.Context, eventID string) (*models.Event, error)
+	CreateEvent(ctx context.Context,calendar *models.Calendar, event *models.Event) error
 }

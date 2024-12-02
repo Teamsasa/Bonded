@@ -36,11 +36,11 @@ func main() {
 			if request.HTTPMethod == "POST" {
 				return h.HandleCreateCalendar(ctx, request)
 			}
-		case "/calendar/edit/" + request.PathParameters["id"]:
+		case "/calendar/edit/" + request.PathParameters["calendarId"]:
 			if request.HTTPMethod == "PUT" {
 				return h.HandlePutCalendarEdit(ctx, request)
 			}
-		case "/calendar/delete/" + request.PathParameters["id"]:
+		case "/calendar/delete/" + request.PathParameters["calendarId"]:
 			if request.HTTPMethod == "DELETE" {
 				return h.HandleDeleteCalendar(ctx, request)
 			}

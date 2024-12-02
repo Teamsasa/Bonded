@@ -7,7 +7,7 @@ import (
 )
 
 func (u *calendarUsecase) CreateCalendar(ctx context.Context, calendar *models.Calendar) error {
-	calendar.ID = uuid.New().String()
+	calendar.CalendarID = uuid.New().String()
 	return u.calendarRepo.Create(ctx, calendar)
 }
 

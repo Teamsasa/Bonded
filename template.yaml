@@ -35,7 +35,7 @@ Resources:
         CalendarEdit:
           Type: Api
           Properties:
-            Path: /calendar/edit/{id}
+            Path: /calendar/edit/{calendarId}
             Method: PUT
         Hello:
           Type: Api
@@ -50,7 +50,7 @@ Resources:
         CalendarDelete:
           Type: Api
           Properties:
-            Path: /calendar/delete/{id}
+            Path: /calendar/delete/{calendarId}
             Method: DELETE
         EventCreate:
           Type: Api

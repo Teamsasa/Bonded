@@ -40,7 +40,7 @@ func (r *calendarRepository) Delete(ctx context.Context, calendarID string) erro
 	input := &dynamodb.DeleteItemInput{
 		TableName: aws.String(r.tableName),
 		Key: map[string]*dynamodb.AttributeValue{
-			"ID": {S: aws.String(calendarID)},
+			"CalendarID": {S: aws.String(calendarID)},
 		},
 	}
 	_, err := r.dynamoDB.DeleteItemWithContext(ctx, input)
@@ -51,7 +51,7 @@ func (r *calendarRepository) FindByCalendarID(ctx context.Context, calendarID st
 	input := &dynamodb.GetItemInput{
 		TableName: aws.String(r.tableName),
 		Key: map[string]*dynamodb.AttributeValue{
-			"ID": {S: aws.String(calendarID)},
+			"CalendarID": {S: aws.String(calendarID)},
 		},
 	}
 	result, err := r.dynamoDB.GetItemWithContext(ctx, input)
@@ -59,7 +59,7 @@ func (r *calendarRepository) FindByCalendarID(ctx context.Context, calendarID st
 		return nil, err
 	}
 	if result.Item == nil {
-		return nil, fmt.Errorf("Calendar with ID %s not found", calendarID)
+		return nil, fmt.Errorf("Calendar with CalendarID %s not found", calendarID)
 	}
 	var calendar models.Calendar
 	err = dynamodbattribute.UnmarshalMap(result.Item, &calendar)

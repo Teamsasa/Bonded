@@ -71,7 +71,7 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 }
 
 func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	id := request.PathParameters["id"]
+	calendarId := request.PathParameters["calendarId"]
 
 	var input struct {
 		Name string `json:"name"`
@@ -84,7 +84,7 @@ func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIG
 		}, nil
 	}
 
-	calendar, err := h.Repo.FindByCalendarID(ctx, id)
+	calendar, err := h.Repo.FindByCalendarID(ctx, calendarId)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 404,
@@ -108,9 +108,9 @@ func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIG
 }
 
 func (h *Handler) HandleDeleteCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	id := request.PathParameters["id"]
+	calendarId := request.PathParameters["calendarId"]
 
-	err := h.Repo.Delete(ctx, id)
+	err := h.Repo.Delete(ctx, calendarId)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,

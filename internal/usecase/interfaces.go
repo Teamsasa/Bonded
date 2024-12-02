@@ -48,6 +48,7 @@ type CalendarUsecase interface {
 	EditCalendar(ctx context.Context, calendar *models.Calendar) error
 	DeleteCalendar(ctx context.Context, calendarID string) error
 	FindCalendars(ctx context.Context, userID string) ([]*models.Calendar, error)
+	FindCalendar(ctx context.Context, calendarID string) (*models.Calendar, error)
 }
 
 type EventUsecase interface {

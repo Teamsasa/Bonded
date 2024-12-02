@@ -10,16 +10,16 @@ import (
 )
 
 type Handler struct {
-	Repo             repository.CalendarRepository
-	CalendearUsecase usecase.CalendarUsecase
-	EventUsecase     usecase.EventUsecase
+	Repo            repository.CalendarRepository
+	CalendarUsecase usecase.CalendarUsecase
+	EventUsecase    usecase.EventUsecase
 }
 
 func HandlerRequest(repo repository.CalendarRepository, usecase usecase.Usecase) *Handler {
 	return &Handler{
-		Repo:             repo,
-		CalendearUsecase: usecase.Calendar(),
-		EventUsecase:     usecase.Event(),
+		Repo:            repo,
+		CalendarUsecase: usecase.Calendar(),
+		EventUsecase:    usecase.Event(),
 	}
 }
 

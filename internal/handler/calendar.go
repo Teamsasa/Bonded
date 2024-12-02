@@ -9,7 +9,7 @@ import (
 
 func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendarID := request.PathParameters["calendarId"]
-	calendar, err := h.CalendearUsecase.FindCalendar(ctx, calendarID)
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -31,8 +31,8 @@ func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatew
 }
 
 func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	userID := request.QueryStringParameters["userId"]
-	calendars, err := h.CalendearUsecase.FindCalendars(ctx, userID)
+	userID := request.PathParameters["userId"]
+	calendars, err := h.CalendarUsecase.FindCalendars(ctx, userID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -62,7 +62,7 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 		}, nil
 	}
 
-	err = h.CalendearUsecase.CreateCalendar(ctx, &calendar)
+	err = h.CalendarUsecase.CreateCalendar(ctx, &calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -89,7 +89,7 @@ func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGate
 		}, nil
 	}
 
-	calendar, err := h.CalendearUsecase.FindCalendar(ctx, calendarId)
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarId)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 404,
@@ -98,7 +98,7 @@ func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGate
 	}
 
 	calendar.Name = input.Name
-	err = h.CalendearUsecase.EditCalendar(ctx, calendar)
+	err = h.CalendarUsecase.EditCalendar(ctx, calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -115,7 +115,7 @@ func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGate
 func (h *Handler) HandleDeleteCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendarId := request.PathParameters["calendarId"]
 
-	err := h.CalendearUsecase.DeleteCalendar(ctx, calendarId)
+	err := h.CalendarUsecase.DeleteCalendar(ctx, calendarId)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,

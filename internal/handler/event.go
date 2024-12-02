@@ -51,7 +51,7 @@ func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatew
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
-		Body:       `{"message":"Calendar created successfully."}` + event.EventID, // 現在はeventIDを返さないと、イベントにアクセスできないため返すが、将来的にはカレンダーのIDから検索できるようにするのでいらなくなるはず
+		Body:       `{"message":"Event created successfully.", "eventId":"` + event.EventID + `"}`,
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func (h *Handler) HandleGetEvents(ctx context.Context, request events.APIGateway
 	calendarID := request.PathParameters["calendarId"]
 
 	// カレンダーの存在確認
-	calendar, err := h.CalendarUsecase.FindByCalendar(ctx, calendarID)
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -74,7 +74,7 @@ func (h *Handler) HandleGetEvents(ctx context.Context, request events.APIGateway
 	}
 
 	// イベントを取得
-	events, err := h.EventUsecase.FindEvents(ctx, calendarID)
+	eventList, err := h.EventUsecase.FindEvents(ctx, calendarID) // 変数名を変更
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -82,15 +82,7 @@ func (h *Handler) HandleGetEvents(ctx context.Context, request events.APIGateway
 		}, nil
 	}
 
-	// イベントがなければ空配列
-	if len(events) == 0 {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 200,
-			Body:       "[]",
-		}, nil
-	}
-
-	body, err := json.Marshal(events)
+	body, err := json.Marshal(eventList)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,

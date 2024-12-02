@@ -60,13 +60,8 @@ Resources:
         EventCreate:
           Type: Api
           Properties:
-            Path: /event/create
+            Path: /event/create/{calendarId}
             Method: POST
-        Event:
-          Type: Api
-          Properties:
-            Path: /event/{eventId}
-            Method: GET
 
     Metadata:
       DockerTag: go-provided.al2-v1

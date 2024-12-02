@@ -48,13 +48,9 @@ func main() {
 			if request.HTTPMethod == "DELETE" {
 				return h.HandleDeleteCalendar(ctx, request)
 			}
-		case "/event/create":
+		case "/event/create/" + request.PathParameters["calendarId"]:
 			if request.HTTPMethod == "POST" {
 				return h.HandleCreateEvent(ctx, request)
-			}
-		case "/event/" + request.PathParameters["eventId"]:
-			if request.HTTPMethod == "GET" {
-				return h.HandleGetEvent(ctx, request)
 			}
 		}
 		return events.APIGatewayProxyResponse{

@@ -6,7 +6,6 @@ type Event struct {
 	EventID     string    `json:"event_id,omitempty" dynamodbav:"EventID"`
 	Title       string    `json:"title" dynamodbav:"Title"`
 	Description string    `json:"description" dynamodbav:"Description"`
-	CalendarID  string    `json:"calendar_id" dynamodbav:"CalendarID"`
 	StartTime   time.Time `json:"start_time" dynamodbav:"StartTime"`
 	EndTime     time.Time `json:"end_time" dynamodbav:"EndTime"`
 	Location    string    `json:"location" dynamodbav:"Location"`

@@ -6,10 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-func (u *usecase) Event() EventUsecase {
-	return u.eventUsecase
-}
-
 func (u *eventUsecase) CreateEvent(ctx context.Context, event *models.Event) error {
 	event.ID = uuid.New().String()
 	return u.eventRepo.Create(ctx, event)

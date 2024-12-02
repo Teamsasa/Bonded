@@ -17,11 +17,6 @@ func CalendarUsecaseRequest(calendarRepo repository.CalendarRepository, eventRep
 	}
 }
 
-type Usecase interface {
-	Calendar() CalendarUsecase
-	Event() EventUsecase
-}
-
 type usecase struct {
 	calendarUsecase CalendarUsecase
 	eventUsecase    EventUsecase
@@ -35,6 +30,18 @@ type eventUsecase struct {
 	eventRepo repository.EventRepository
 }
 
+type Usecase interface {
+	Calendar() CalendarUsecase
+	Event() EventUsecase
+}
+
+func (u *usecase) Calendar() CalendarUsecase {
+	return u.calendarUsecase
+}
+
+func (u *usecase) Event() EventUsecase {
+	return u.eventUsecase
+}
 
 type CalendarUsecase interface {
 	CreateCalendar(ctx context.Context, calendar *models.Calendar) error

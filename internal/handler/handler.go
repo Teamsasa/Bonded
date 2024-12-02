@@ -84,7 +84,7 @@ func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIG
 		}, nil
 	}
 
-	calendar, err := h.Repo.FindByID(ctx, id)
+	calendar, err := h.Repo.FindByCalendarID(ctx, id)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 404,

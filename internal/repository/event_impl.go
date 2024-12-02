@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"bonded/internal/infra/db"
 	"bonded/internal/models"
 	"context"
 
@@ -9,24 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
-
-type eventRepository struct {
-	dynamoDB  *dynamodb.DynamoDB
-	tableName string
-}
-
-type EventRepository interface {
-	Create(ctx context.Context, event *models.Event) error
-	FindByEventID(ctx context.Context, eventID string) (*models.Event, error)
-	// ...必要に応じて他のメソッド...
-}
-
-func EventRepositoryRequest(dynamoClient *db.DynamoDBClient) EventRepository {
-	return &eventRepository{
-		dynamoDB:  dynamoClient.Client,
-		tableName: "Events",
-	}
-}
 
 func (r *eventRepository) Create(ctx context.Context, event *models.Event) error {
 	item, err := dynamodbattribute.MarshalMap(event)

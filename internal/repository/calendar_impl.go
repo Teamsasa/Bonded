@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"bonded/internal/infra/db"
 	"bonded/internal/models"
 	"context"
 	"fmt"
@@ -10,26 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
-
-type calendarRepository struct {
-	dynamoDB  *dynamodb.DynamoDB
-	tableName string
-}
-
-type CalendarRepository interface {
-	Create(ctx context.Context, calendar *models.Calendar) error
-	Edit(ctx context.Context, calendar *models.Calendar) error
-	Delete(ctx context.Context, calendarID string) error
-	FindByID(ctx context.Context, calendarID string) (*models.Calendar, error)
-	FindByUserID(ctx context.Context, userID string) ([]*models.Calendar, error)
-}
-
-func CalendarRepositoryRequest(dynamoClient *db.DynamoDBClient) CalendarRepository {
-	return &calendarRepository{
-		dynamoDB:  dynamoClient.Client,
-		tableName: "Calendars",
-	}
-}
 
 func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calendar) error {
 	item, err := dynamodbattribute.MarshalMap(calendar)
@@ -68,7 +47,7 @@ func (r *calendarRepository) Delete(ctx context.Context, calendarID string) erro
 	return err
 }
 
-func (r *calendarRepository) FindByID(ctx context.Context, calendarID string) (*models.Calendar, error) {
+func (r *calendarRepository) FindByCalendarID(ctx context.Context, calendarID string) (*models.Calendar, error) {
 	input := &dynamodb.GetItemInput{
 		TableName: aws.String(r.tableName),
 		Key: map[string]*dynamodb.AttributeValue{

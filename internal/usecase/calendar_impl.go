@@ -6,10 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-func (u *usecase) Calendar() CalendarUsecase {
-	return u.calendarUsecase
-}
-
 func (u *calendarUsecase) CreateCalendar(ctx context.Context, calendar *models.Calendar) error {
 	calendar.ID = uuid.New().String()
 	return u.calendarRepo.Create(ctx, calendar)
@@ -26,4 +22,3 @@ func (u *calendarUsecase) DeleteCalendar(ctx context.Context, calendarID string)
 func (u *calendarUsecase) FindCalendars(ctx context.Context, userID string) ([]*models.Calendar, error) {
 	return u.calendarRepo.FindByUserID(ctx, userID)
 }
-

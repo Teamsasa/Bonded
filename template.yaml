@@ -22,10 +22,15 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: "Events"
       Events:
+        Calendar:
+          Type: Api
+          Properties: 
+            Path: /calendar/{calendarId}
+            Method: GET
         CalendarList:
           Type: Api
           Properties:
-            Path: /calendar/list
+            Path: /calendar/list/{userId}
             Method: GET
         CalendarCreate:
           Type: Api

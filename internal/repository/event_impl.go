@@ -26,7 +26,7 @@ func (r *eventRepository) FindByEventID(ctx context.Context, eventID string) (*m
 	input := &dynamodb.GetItemInput{
 		TableName: aws.String(r.tableName),
 		Key: map[string]*dynamodb.AttributeValue{
-			"ID": {
+			"EventID": {
 				S: aws.String(eventID),
 			},
 		},

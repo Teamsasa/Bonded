@@ -53,7 +53,9 @@ func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGate
 }
 
 func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	userID := request.PathParameters["userId"]
 	var calendar models.Calendar
+	calendar.UserID = userID
 	err := json.Unmarshal([]byte(request.Body), &calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
@@ -77,7 +79,6 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 
 func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendarId := request.PathParameters["calendarId"]
-
 	var input struct {
 		Name string `json:"name"`
 	}
@@ -114,7 +115,6 @@ func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGate
 
 func (h *Handler) HandleDeleteCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendarId := request.PathParameters["calendarId"]
-
 	err := h.CalendarUsecase.DeleteCalendar(ctx, calendarId)
 	if err != nil {
 		return events.APIGatewayProxyResponse{

@@ -35,7 +35,7 @@ Resources:
         CalendarCreate:
           Type: Api
           Properties:
-            Path: /calendar/create
+            Path: /calendar/create/{userId}
             Method: POST
         CalendarEdit:
           Type: Api

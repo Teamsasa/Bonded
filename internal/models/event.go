@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Event struct {
-	ID          string    `json:"id,omitempty" dynamodbav:"ID"`
+	EventID     string    `json:"event_id,omitempty" dynamodbav:"EventID"`
 	Title       string    `json:"title" dynamodbav:"Title"`
 	Description string    `json:"description" dynamodbav:"Description"`
 	CalendarID  string    `json:"calendar_id" dynamodbav:"CalendarID"`

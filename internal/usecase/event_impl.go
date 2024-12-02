@@ -7,7 +7,7 @@ import (
 )
 
 func (u *eventUsecase) CreateEvent(ctx context.Context, event *models.Event) error {
-	event.ID = uuid.New().String()
+	event.EventID = uuid.New().String()
 	return u.eventRepo.Create(ctx, event)
 }
 

@@ -69,10 +69,10 @@ if [ $? -ne 0 ]; then
     aws dynamodb create-table \
         --table-name "$EVENT_TABLE_NAME" \
         --attribute-definitions \
-            AttributeName=ID,AttributeType=S \
+            AttributeName=EventID,AttributeType=S \
             AttributeName=CalendarID,AttributeType=S \
         --key-schema \
-            AttributeName=ID,KeyType=HASH \
+            AttributeName=EventID,KeyType=HASH \
         --global-secondary-indexes file://gsi_events.json \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
         --endpoint-url http://localhost:8000 \
@@ -100,7 +100,7 @@ if [ $? -ne 0 ]; then
     aws dynamodb put-item \
       --table-name "$EVENT_TABLE_NAME" \
       --item '{
-          "ID": {"S": "1"},
+          "EventID": {"S": "1"},
           "CalendarID": {"S": "64f1b9cb-fb79-403a-a4d8-e7203a80f52a"},
           "Title": {"S": "Test Event"},
           "Description": {"S": "This is a test event"},

@@ -149,7 +149,7 @@ func (h *Handler) DynamoDBTestHandler(ctx context.Context, request events.APIGat
 
 // 一旦、個別取得のみ。userIDから一覧取得とかもあった方がいいかも
 func (h *Handler) HandleGetEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	eventID := request.PathParameters["id"]
+	eventID := request.PathParameters["eventId"]
 	event, err := h.EventUsecase.FindEvent(ctx, eventID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
@@ -190,6 +190,6 @@ func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatew
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
-		Body:       `{"message":"イベントが正常に作成されました "}` + event.ID,
+		Body:       `{"message":"Calendar created successfully."}` + event.EventID, // 現在はeventIDを返さないと、イベントにアクセスできないため返すが、将来的にはカレンダーのIDから検索できるようにするのでいらなくなるはず
 	}, nil
 }

@@ -60,7 +60,7 @@ Resources:
         Event:
           Type: Api
           Properties:
-            Path: /event/{id}
+            Path: /event/{eventId}
             Method: GET
 
     Metadata:

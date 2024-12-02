@@ -48,7 +48,7 @@ func main() {
 			if request.HTTPMethod == "POST" {
 				return h.HandleCreateEvent(ctx, request)
 			}
-		case "/event/" + request.PathParameters["id"]:
+		case "/event/" + request.PathParameters["eventId"]:
 			if request.HTTPMethod == "GET" {
 				return h.HandleGetEvent(ctx, request)
 			}

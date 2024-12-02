@@ -10,18 +10,18 @@ import (
 )
 
 func (r *eventRepository) CreateEvent(ctx context.Context, calendar *models.Calendar, event *models.Event) error {
-    calendar.Event = append(calendar.Event, *event)
+	calendar.Event = append(calendar.Event, *event)
 
-    item, err := dynamodbattribute.MarshalMap(calendar)
-    if err != nil {
-        return err
-    }
+	item, err := dynamodbattribute.MarshalMap(calendar)
+	if err != nil {
+		return err
+	}
 
-    input := &dynamodb.PutItemInput{
-        TableName: aws.String(r.tableName),
-        Item:      item,
-    }
+	input := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      item,
+	}
 
-    _, err = r.dynamoDB.PutItemWithContext(ctx, input)
-    return err
+	_, err = r.dynamoDB.PutItemWithContext(ctx, input)
+	return err
 }

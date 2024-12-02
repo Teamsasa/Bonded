@@ -40,5 +40,5 @@ type CalendarRepository interface {
 }
 
 type EventRepository interface {
-	CreateEvent(ctx context.Context,calendar *models.Calendar, event *models.Event) error
+	CreateEvent(ctx context.Context, calendar *models.Calendar, event *models.Event) error
 }

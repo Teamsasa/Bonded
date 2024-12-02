@@ -32,5 +32,5 @@ func (db *DynamoDB) DescribeSampleTable(ctx context.Context) error {
 	}
 
 	_, err := svc.DescribeTableWithContext(ctx, inputCalendars)
-		return err
+	return err
 }

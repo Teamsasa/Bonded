@@ -34,17 +34,16 @@ func (am *authMiddleware) AuthMiddleware(next func(ctx context.Context, request 
 			return unauthorizedResponse("Missing or invalid Authorization header")
 		}
 		accessToken := strings.TrimPrefix(authHeader, "Bearer ")
-
-		idToken, ok := request.Headers["X-Id-Token"]
-		if !ok || idToken == "" {
-			return unauthorizedResponse("Missing ID token")
-		}
-
 		_, err := am.authUsecase.ValidateJWT(accessToken)
 		if err != nil {
 			return unauthorizedResponse(err.Error())
 		}
 
+		idTokenHeader, ok := request.Headers["X-Id-Token"]
+		if !ok || !strings.HasPrefix(idTokenHeader, "Bearer ") {
+			return unauthorizedResponse("Missing or invalid ID token header")
+		}
+		idToken := strings.TrimPrefix(idTokenHeader, "Bearer ")
 		jwtData, err := am.authUsecase.ValidateJWT(idToken)
 		if err != nil {
 			return unauthorizedResponse(err.Error())

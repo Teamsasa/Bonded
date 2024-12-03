@@ -26,6 +26,7 @@ go.work.sum
 
 # Environment file
 .env
+env.json
 
 # Go build output directories
 bin/

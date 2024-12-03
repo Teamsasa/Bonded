@@ -19,7 +19,7 @@ dynamodb-init: ## Initialize DynamoDB Local using an external script
 	@./init-dynamodb.sh
 
 sam-api: ## Start SAM API
-	sam local start-api --docker-network bonded_default
+	sam local start-api --env-vars env.json --docker-network bonded_default
 
 build: ## Build SAM application
 	go mod tidy                        # 依存関係を整理

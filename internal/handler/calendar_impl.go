@@ -60,8 +60,8 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
 			Body:       "Invalid request payload",
-			}, nil
-		}
+		}, nil
+	}
 	calendar.UserID = userID
 
 	err = h.CalendarUsecase.CreateCalendar(ctx, &calendar)

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -12,10 +13,10 @@ type DynamoDBClient struct {
 	Client *dynamodb.DynamoDB
 }
 
-func DynamoDBClientRequest() *DynamoDBClient {
+func DynamoDBClientRequest() (*DynamoDBClient, error) {
 	endpoint := os.Getenv("DYNAMODB_ENDPOINT")
 	if endpoint == "" {
-		endpoint = "http://localhost:8000" // デフォルトエンドポイント
+		return nil, fmt.Errorf("DYNAMODB_ENDPOINT is not set")
 	}
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region:   aws.String("ap-northeast-1"),
@@ -23,5 +24,5 @@ func DynamoDBClientRequest() *DynamoDBClient {
 	}))
 	return &DynamoDBClient{
 		Client: dynamodb.New(sess),
-	}
+	}, nil
 }

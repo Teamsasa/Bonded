@@ -1,31 +1,38 @@
 package handler
 
 import (
-	"bonded/internal/infra/db"
 	"bonded/internal/models"
-	"bonded/internal/repository"
-	"bonded/internal/usecase"
 	"context"
 	"encoding/json"
-
 	"github.com/aws/aws-lambda-go/events"
 )
 
-type Handler struct {
-	Repo    repository.CalendarRepository
-	Usecase usecase.CalendarUsecase
-}
-
-func HandlerRequest(repo repository.CalendarRepository, usecase usecase.CalendarUsecase) *Handler {
-	return &Handler{
-		Repo:    repo,
-		Usecase: usecase,
+func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	calendarID := request.PathParameters["calendarId"]
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarID)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error finding calendar: " + err.Error(),
+		}, nil
 	}
+
+	body, err := json.Marshal(calendar)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error marshalling response: " + err.Error(),
+		}, nil
+	}
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       string(body),
+	}, nil
 }
 
 func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	userID := request.QueryStringParameters["userId"]
-	calendars, err := h.Repo.FindByUserID(ctx, userID)
+	userID := request.PathParameters["userId"]
+	calendars, err := h.CalendarUsecase.FindCalendars(ctx, userID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -46,6 +53,7 @@ func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGate
 }
 
 func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	userID := request.PathParameters["userId"]
 	var calendar models.Calendar
 	err := json.Unmarshal([]byte(request.Body), &calendar)
 	if err != nil {
@@ -54,8 +62,9 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 			Body:       "Invalid request payload",
 		}, nil
 	}
+	calendar.UserID = userID
 
-	err = h.Usecase.CreateCalendar(ctx, &calendar)
+	err = h.CalendarUsecase.CreateCalendar(ctx, &calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -67,9 +76,9 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 		Body:       `{"message":"Calendar created successfully."}`,
 	}, nil
 }
-func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	id := request.PathParameters["id"]
 
+func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	calendarId := request.PathParameters["calendarId"]
 	var input struct {
 		Name string `json:"name"`
 	}
@@ -81,7 +90,7 @@ func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIG
 		}, nil
 	}
 
-	calendar, err := h.Repo.FindByID(ctx, id)
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarId)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 404,
@@ -90,7 +99,7 @@ func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIG
 	}
 
 	calendar.Name = input.Name
-	err = h.Repo.Edit(ctx, calendar)
+	err = h.CalendarUsecase.EditCalendar(ctx, calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -104,26 +113,17 @@ func (h *Handler) HandlePutCalendarEdit(ctx context.Context, request events.APIG
 	}, nil
 }
 
-func (h *Handler) HelloHandler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	greeting := usecase.GetGreeting(ctx, request.RequestContext.Identity.SourceIP)
-	return events.APIGatewayProxyResponse{
-		Body:       greeting,
-		StatusCode: 200,
-	}, nil
-}
-
-func (h *Handler) DynamoDBTestHandler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	dynamoRepo := db.NewDynamoDB()
-	dynamoUsecase := usecase.DynamoUsecaseRequest(dynamoRepo)
-	err := dynamoUsecase.DynamoDBTest(ctx)
+func (h *Handler) HandleDeleteCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	calendarId := request.PathParameters["calendarId"]
+	err := h.CalendarUsecase.DeleteCalendar(ctx, calendarId)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
-			Body:       "Failed to access DynamoDB table: " + err.Error(),
 			StatusCode: 500,
+			Body:       "Failed to delete calendar",
 		}, nil
 	}
 	return events.APIGatewayProxyResponse{
-		Body:       "Successfully accessed DynamoDB table",
 		StatusCode: 200,
+		Body:       `{"message":"Calendar deleted successfully."}`,
 	}, nil
 }

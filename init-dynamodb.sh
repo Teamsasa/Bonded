@@ -12,11 +12,11 @@ if [ $? -ne 0 ]; then
     aws dynamodb create-table \
         --table-name "$TABLE_NAME" \
         --attribute-definitions \
-            AttributeName=ID,AttributeType=S \
             AttributeName=UserID,AttributeType=S \
+            AttributeName=CalendarID,AttributeType=S \
         --key-schema \
-            AttributeName=ID,KeyType=HASH \
-        --global-secondary-indexes file://gsi.json \
+            AttributeName=UserID,KeyType=HASH \
+            AttributeName=CalendarID,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
         --endpoint-url http://localhost:8000 \
         --region ap-northeast-1 \
@@ -38,11 +38,41 @@ if [ $? -ne 0 ]; then
 
     echo "Table '$TABLE_NAME' created successfully."
 
-    # データ挿入（必要に応じて）
+    # データ挿入
     echo "Inserting data into '$TABLE_NAME'..."
     aws dynamodb put-item \
       --table-name "$TABLE_NAME" \
-      --item '{"ID": {"S": "1"}, "UserID": {"S": "user1"}, "Name": {"S": "Test User"}}' \
+      --item '{
+          "UserID": {"S": "user1"},
+          "CalendarID": {"S": "1"},
+          "Name": {"S": "Test User"},
+          "Event": {
+              "L": [
+                  {
+                      "M": {
+                          "EventID": {"S": "1"},
+                          "Title": {"S": "Test Event 1"},
+                          "Description": {"S": "This is a test event 1"},
+                          "StartTime": {"S": "2021-08-01T00:00:00Z"},
+                          "EndTime": {"S": "2021-08-01T01:00:00Z"},
+                          "Location": {"S": "新宿"},
+                          "AllDay": {"BOOL": false}
+                      }
+                  },
+                  {
+                      "M": {
+                          "EventID": {"S": "2"},
+                          "Title": {"S": "Test Event 2"},
+                          "Description": {"S": "This is a test event 2"},
+                          "StartTime": {"S": "2021-08-02T00:00:00Z"},
+                          "EndTime": {"S": "2021-08-02T01:00:00Z"},
+                          "Location": {"S": "渋谷"},
+                          "AllDay": {"BOOL": false}
+                      }
+                  }
+              ]
+          }
+      }' \
       --endpoint-url http://localhost:8000 \
       --region ap-northeast-1 \
       > insert_data.log 2>&1
@@ -58,4 +88,3 @@ else
 fi
 
 echo "DynamoDB Initialization Complete."
-

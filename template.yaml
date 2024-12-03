@@ -19,21 +19,28 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: "Calendars"
+        - DynamoDBCrudPolicy:
+            TableName: "Events"
       Events:
+        Calendar:
+          Type: Api
+          Properties: 
+            Path: /calendar/{calendarId}
+            Method: GET
         CalendarList:
           Type: Api
           Properties:
-            Path: /calendar/list
+            Path: /calendar/list/{userId}
             Method: GET
         CalendarCreate:
           Type: Api
           Properties:
-            Path: /calendar/create
+            Path: /calendar/create/{userId}
             Method: POST
         CalendarEdit:
           Type: Api
           Properties:
-            Path: /calendar/edit/{id}
+            Path: /calendar/edit/{calendarId}
             Method: PUT
         Hello:
           Type: Api
@@ -45,11 +52,21 @@ Resources:
           Properties:
             Path: /dynamodb-test
             Method: GET
+        CalendarDelete:
+          Type: Api
+          Properties:
+            Path: /calendar/delete/{calendarId}
+            Method: DELETE
+        EventCreate:
+          Type: Api
+          Properties:
+            Path: /event/create/{calendarId}
+            Method: POST
+
     Metadata:
       DockerTag: go-provided.al2-v1
       DockerContext: .
       Dockerfile: Dockerfile
-
 Outputs:
   BondedAPI:
     Description: "API Gateway endpoint URL for Prod environment for Bonded Function"

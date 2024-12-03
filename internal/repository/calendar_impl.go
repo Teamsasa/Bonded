@@ -43,8 +43,14 @@ func (r *calendarRepository) Delete(ctx context.Context, calendarID string) erro
 			"CalendarID": {S: aws.String(calendarID)},
 		},
 	}
-	_, err := r.dynamoDB.DeleteItemWithContext(ctx, input)
-	return err
+	result, err := r.dynamoDB.DeleteItemWithContext(ctx, input)
+	if err != nil {
+		return err
+	}
+	if result == nil {
+		return fmt.Errorf("calendar with calendarID %s not found", calendarID)
+	}
+	return nil
 }
 
 func (r *calendarRepository) FindByCalendarID(ctx context.Context, calendarID string) (*models.Calendar, error) {

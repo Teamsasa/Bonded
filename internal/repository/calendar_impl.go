@@ -59,7 +59,7 @@ func (r *calendarRepository) FindByCalendarID(ctx context.Context, calendarID st
 		return nil, err
 	}
 	if result.Item == nil {
-		return nil, fmt.Errorf("Calendar with CalendarID %s not found", calendarID)
+		return nil, fmt.Errorf("calendar with CalendarID %s not found", calendarID)
 	}
 	var calendar models.Calendar
 	err = dynamodbattribute.UnmarshalMap(result.Item, &calendar)

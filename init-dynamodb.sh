@@ -12,11 +12,11 @@ if [ $? -ne 0 ]; then
     aws dynamodb create-table \
         --table-name "$TABLE_NAME" \
         --attribute-definitions \
-            AttributeName=CalendarID,AttributeType=S \
             AttributeName=UserID,AttributeType=S \
+            AttributeName=CalendarID,AttributeType=S \
         --key-schema \
-            AttributeName=CalendarID,KeyType=HASH \
-        --global-secondary-indexes file://gsi_calendars.json \
+            AttributeName=UserID,KeyType=HASH \
+            AttributeName=CalendarID,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
         --endpoint-url http://localhost:8000 \
         --region ap-northeast-1 \
@@ -43,8 +43,8 @@ if [ $? -ne 0 ]; then
     aws dynamodb put-item \
       --table-name "$TABLE_NAME" \
       --item '{
-          "CalendarID": {"S": "1"},
           "UserID": {"S": "user1"},
+          "CalendarID": {"S": "1"},
           "Name": {"S": "Test User"},
           "Event": {
               "L": [
@@ -77,7 +77,6 @@ if [ $? -ne 0 ]; then
       --region ap-northeast-1 \
       > insert_data.log 2>&1
 
-echo "DynamoDB Initialization Complete."
     if [ $? -eq 0 ]; then
         echo "Data inserted successfully."
     else

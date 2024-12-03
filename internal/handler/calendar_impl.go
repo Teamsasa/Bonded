@@ -55,14 +55,14 @@ func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGate
 func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	userID := request.PathParameters["userId"]
 	var calendar models.Calendar
-	calendar.UserID = userID
 	err := json.Unmarshal([]byte(request.Body), &calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
 			Body:       "Invalid request payload",
-		}, nil
-	}
+			}, nil
+		}
+	calendar.UserID = userID
 
 	err = h.CalendarUsecase.CreateCalendar(ctx, &calendar)
 	if err != nil {

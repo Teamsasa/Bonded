@@ -12,7 +12,10 @@ import (
 )
 
 func main() {
-	dynamoClient := db.DynamoDBClientRequest()
+	dynamoClient, err := db.DynamoDBClientRequest()
+	if err != nil {
+		panic(err)
+	}
 	calendarRepo := repository.CalendarRepositoryRequest(dynamoClient)
 	eventRepo := repository.EventRepositoryRequest(dynamoClient)
 	appUsecase := usecase.CalendarUsecaseRequest(calendarRepo, eventRepo)

@@ -75,14 +75,9 @@ func (r *calendarRepository) FindByCalendarID(ctx context.Context, calendarID st
 func (r *calendarRepository) FindByUserID(ctx context.Context, userID string) ([]*models.Calendar, error) {
 	input := &dynamodb.QueryInput{
 		TableName: aws.String(r.tableName),
-		IndexName: aws.String("UserID-index"),
-		KeyConditions: map[string]*dynamodb.Condition{
-			"UserID": {
-				ComparisonOperator: aws.String("EQ"),
-				AttributeValueList: []*dynamodb.AttributeValue{
-					{S: aws.String(userID)},
-				},
-			},
+		KeyConditionExpression: aws.String("UserID = :uid"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":uid": {S: aws.String(userID)},
 		},
 	}
 	result, err := r.dynamoDB.QueryWithContext(ctx, input)

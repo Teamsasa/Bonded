@@ -27,7 +27,7 @@ Resources:
           COGNITO_CLIENT_ID:
           COGNITO_ISSUER:
           COGNITO_JWKS_URL:
-          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
+          DYNAMODB_ENDPOINT:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: "Calendars"

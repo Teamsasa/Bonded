@@ -15,7 +15,7 @@ type DynamoDBClient struct {
 func DynamoDBClientRequest() *DynamoDBClient {
 	endpoint := os.Getenv("DYNAMODB_ENDPOINT")
 	if endpoint == "" {
-		endpoint = "http://localhost:8000" // デフォルトエンドポイント
+		endpoint = "http://host.docker.internal:8000"
 	}
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region:   aws.String("ap-northeast-1"),

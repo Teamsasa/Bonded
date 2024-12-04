@@ -43,10 +43,6 @@ func main() {
 				if request.HTTPMethod == "GET" {
 					return h.HelloHandler(ctx, request)
 				}
-			case "/dynamodb-test":
-				if request.HTTPMethod == "GET" {
-					return h.DynamoDBTestHandler(ctx, request)
-				}
 			case "/calendar/" + request.PathParameters["calendarId"]: // ok
 				if request.HTTPMethod == "GET" {
 					return h.HandleGetCalendar(ctx, request)

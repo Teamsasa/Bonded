@@ -20,6 +20,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - name
+                - isPublic
               properties:
                 name:
                   type: string

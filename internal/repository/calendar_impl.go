@@ -87,14 +87,9 @@ func (r *calendarRepository) FindByCalendarID(ctx context.Context, calendarID st
         return nil, err
     }
 
-    // クエリ結果のイベント数をログ出力
-    fmt.Printf("イベント取得数: %d\n", len(eventResult.Items))
-
     var events []models.Event
     err = dynamodbattribute.UnmarshalListOfMaps(eventResult.Items, &events)
     if err != nil {
-        // アンマーシャルエラーをログ出力
-        fmt.Printf("イベントのアンマーシャルエラー: %v\n", err)
         return nil, err
     }
 
@@ -128,10 +123,9 @@ func (r *calendarRepository) FindByUserID(ctx context.Context, userID string) ([
     input := &dynamodb.QueryInput{
         TableName: aws.String(r.tableName),
         IndexName: aws.String("UserID-index"),
-        KeyConditionExpression: aws.String("UserID = :uid AND begins_with(SortKey, :sk)"),
+        KeyConditionExpression: aws.String("UserID = :uid"),
         ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
             ":uid": {S: aws.String(userID)},
-            ":sk":  {S: aws.String("CAL#")},
         },
     }
     result, err := r.dynamoDB.QueryWithContext(ctx, input)
@@ -139,17 +133,19 @@ func (r *calendarRepository) FindByUserID(ctx context.Context, userID string) ([
         return nil, err
     }
 
-	fmt.Println("result.Items: ", result.Items)
-
     // カレンダー情報を取得
     var calendars []*models.Calendar
+    calendarIDSet := make(map[string]struct{})
     for _, item := range result.Items {
         calendarID := *item["CalendarID"].S
-        calendar, err := r.FindByCalendarID(ctx, calendarID) // カレンダー情報すべてを取得
-        if err != nil {
-            return nil, err
+        if _, exists := calendarIDSet[calendarID]; !exists {
+            calendar, err := r.FindByCalendarID(ctx, calendarID)
+            if err != nil {
+                return nil, err
+            }
+            calendars = append(calendars, calendar)
+            calendarIDSet[calendarID] = struct{}{}
         }
-        calendars = append(calendars, calendar)
     }
 
     return calendars, nil

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"bonded/internal/models"
+	// "bonded/internal/models"
 	"context"
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
@@ -52,30 +52,30 @@ func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGate
 	}, nil
 }
 
-func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	userID := request.PathParameters["userId"]
-	var calendar models.Calendar
-	err := json.Unmarshal([]byte(request.Body), &calendar)
-	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 400,
-			Body:       "Invalid request payload",
-		}, nil
-	}
-	calendar.UserID = userID
+// func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+// 	userID := request.PathParameters["userId"]
+// 	var calendar models.Calendar
+// 	err := json.Unmarshal([]byte(request.Body), &calendar)
+// 	if err != nil {
+// 		return events.APIGatewayProxyResponse{
+// 			StatusCode: 400,
+// 			Body:       "Invalid request payload",
+// 		}, nil
+// 	}
+// 	calendar.Users = userID
 
-	err = h.CalendarUsecase.CreateCalendar(ctx, &calendar)
-	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 500,
-			Body:       "Error saving calendar: " + err.Error(),
-		}, nil
-	}
-	return events.APIGatewayProxyResponse{
-		StatusCode: 201,
-		Body:       `{"message":"Calendar created successfully."}`,
-	}, nil
-}
+// 	err = h.CalendarUsecase.CreateCalendar(ctx, &calendar)
+// 	if err != nil {
+// 		return events.APIGatewayProxyResponse{
+// 			StatusCode: 500,
+// 			Body:       "Error saving calendar: " + err.Error(),
+// 		}, nil
+// 	}
+// 	return events.APIGatewayProxyResponse{
+// 		StatusCode: 201,
+// 		Body:       `{"message":"Calendar created successfully."}`,
+// 	}, nil
+// }
 
 func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendarId := request.PathParameters["calendarId"]

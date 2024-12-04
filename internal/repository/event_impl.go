@@ -10,7 +10,7 @@ import (
 )
 
 func (r *eventRepository) CreateEvent(ctx context.Context, calendar *models.Calendar, event *models.Event) error {
-	calendar.Event = append(calendar.Event, *event)
+	calendar.Events = append(calendar.Events, *event)
 
 	item, err := dynamodbattribute.MarshalMap(calendar)
 	if err != nil {

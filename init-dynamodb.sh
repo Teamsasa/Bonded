@@ -5,24 +5,27 @@ TABLE_NAME="Calendars"
 echo "Initializing DynamoDB Local..."
 
 # テーブルの存在確認
-aws dynamodb describe-table --table-name "$TABLE_NAME" --endpoint-url http://localhost:8000 --region ap-northeast-1 2>/dev/null
+aws dynamodb describe-table --table-name "$TABLE_NAME" --endpoint-url http://localhost:8000 --region ap-northeast-1 > /dev/null 2>&1
 
 if [ $? -ne 0 ]; then
     echo "Creating DynamoDB table '$TABLE_NAME'..."
     aws dynamodb create-table \
         --table-name "$TABLE_NAME" \
         --attribute-definitions \
-            AttributeName=UserID,AttributeType=S \
             AttributeName=CalendarID,AttributeType=S \
+            AttributeName=SortKey,AttributeType=S \
+            AttributeName=UserID,AttributeType=S \
         --key-schema \
             AttributeName=CalendarID,KeyType=HASH \
+            AttributeName=SortKey,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
         --global-secondary-indexes \
             "[
                 {
                     \"IndexName\": \"UserID-index\",
                     \"KeySchema\": [
-                        {\"AttributeName\":\"UserID\",\"KeyType\":\"HASH\"}
+                        {\"AttributeName\":\"UserID\",\"KeyType\":\"HASH\"},
+                        {\"AttributeName\":\"SortKey\",\"KeyType\":\"RANGE\"}
                     ],
                     \"Projection\":{
                         \"ProjectionType\":\"ALL\"
@@ -44,7 +47,7 @@ if [ $? -ne 0 ]; then
 
     echo "Waiting for the table to be active..."
     aws dynamodb wait table-exists --table-name "$TABLE_NAME" --endpoint-url http://localhost:8000 --region ap-northeast-1 \
-        > wait_table.log 2>&1
+        >> create_table.log 2>&1
 
     if [ $? -ne 0 ]; then
         echo "Table '$TABLE_NAME' did not become active. Check wait_table.log for details."
@@ -55,71 +58,74 @@ if [ $? -ne 0 ]; then
 
     # データ挿入
     echo "Inserting data into '$TABLE_NAME'..."
-    aws dynamodb put-item \
-      --table-name "$TABLE_NAME" \
-      --item '{
-          "CalendarID": {"S": "1"},
-          "Name": {"S": "Test Calendar 1"},
-          "IsPublic": {"BOOL": true},
-          "OwnerUserID": {"S": "user1"},
-          "Users": {
-              "L": [
-                  {
-                      "M": {
-                          "UserID": {"S": "user1"},
-                          "DisplayName": {"S": "ユーザー1の表示名"},
-                          "Email": {"S": "user1@example.com"},
-                          "Password": {"S": "password1"},
-                          "AccessLevel": {"S": "OWNER"}
-                      }
-                  },
-                  {
-                      "M": {
-                          "UserID": {"S": "user2"},
-                          "DisplayName": {"S": "ユーザー2の表示名"},
-                          "Email": {"S": "user2@example.com"},
-                          "Password": {"S": "password2"},
-                          "AccessLevel": {"S": "EDITOR"}
-                      }
-                  }
-              ]
-          },
-          "Events": {
-              "L": [
-                  {
-                      "M": {
-                          "EventID": {"S": "event1"},
-                          "Title": {"S": "Test Event 1"},
-                          "Description": {"S": "This is a test event 1"},
-                          "StartTime": {"S": "2021-08-01T00:00:00Z"},
-                          "EndTime": {"S": "2021-08-01T01:00:00Z"},
-                          "Location": {"S": "新宿"},
-                          "AllDay": {"BOOL": false}
-                      }
-                  },
-                  {
-                      "M": {
-                          "EventID": {"S": "event2"},
-                          "Title": {"S": "Test Event 2"},
-                          "Description": {"S": "This is a test event 2"},
-                          "StartTime": {"S": "2021-08-02T00:00:00Z"},
-                          "EndTime": {"S": "2021-08-02T01:00:00Z"},
-                          "Location": {"S": "渋谷"},
-                          "AllDay": {"BOOL": false}
-                      }
-                  }
-              ]
-          }
-      }' \
-      --endpoint-url http://localhost:8000 \
-      --region ap-northeast-1 \
-      > insert_data.log 2>&1
 
-    if [ $? -eq 0 ]; then
-        echo "Data inserted successfully."
-    else
-        echo "Failed to insert data. Check insert_data.log for details."
-    fi
+    # カレンダー情報の挿入
+    aws dynamodb put-item \
+        --table-name "$TABLE_NAME" \
+        --item '{
+            "CalendarID": {"S": "1"},
+            "SortKey": {"S": "CALENDAR"},
+            "Name": {"S": "Test Calendar 1"},
+            "IsPublic": {"BOOL": true},
+            "OwnerUserID": {"S": "user1"}
+        }' \
+        --endpoint-url http://localhost:8000 \
+        --region ap-northeast-1 \
+        >> insert_data.log 2>&1
+
+    # ユーザー情報の挿入
+    USERS=("user1" "user2")
+    for USER in "${USERS[@]}"; do
+        aws dynamodb put-item \
+            --table-name "$TABLE_NAME" \
+            --item "{
+                \"CalendarID\": {\"S\": \"1\"},
+                \"SortKey\": {\"S\": \"USER#$USER\"},
+                \"UserID\": {\"S\": \"$USER\"},
+                \"DisplayName\": {\"S\": \"${USER}の表示名\"},
+                \"Email\": {\"S\": \"${USER}@example.com\"},
+                \"Password\": {\"S\": \"password\"},
+                \"AccessLevel\": {\"S\": \"EDITOR\"}
+            }" \
+            --endpoint-url http://localhost:8000 \
+            --region ap-northeast-1 \
+            >> insert_data.log 2>&1
+
+        # GSI用のカレンダー情報の挿入を修正
+        aws dynamodb put-item \
+            --table-name "$TABLE_NAME" \
+            --item "{
+                \"CalendarID\": {\"S\": \"1\"},
+                \"SortKey\": {\"S\": \"CAL#1\"},
+                \"UserID\": {\"S\": \"$USER\"}
+            }" \
+            --endpoint-url http://localhost:8000 \
+            --region ap-northeast-1 \
+            >> insert_data.log 2>&1
+    done
+
+    # イベント情報の挿入
+    EVENTS=("event1" "event2" "event3")
+    for EVENT in "${EVENTS[@]}"; do
+        aws dynamodb put-item \
+            --table-name "$TABLE_NAME" \
+            --item "{
+                \"CalendarID\": {\"S\": \"1\"},
+                \"SortKey\": {\"S\": \"EVENT#$EVENT\"},
+                \"EventID\": {\"S\": \"$EVENT\"},
+                \"Title\": {\"S\": \"Test Event $EVENT\"},
+                \"Description\": {\"S\": \"This is test event $EVENT\"},
+                \"StartTime\": {\"S\": \"2021-08-0${EVENT: -1}T00:00:00Z\"},
+                \"EndTime\": {\"S\": \"2021-08-0${EVENT: -1}T01:00:00Z\"},
+                \"Location\": {\"S\": \"場所$EVENT\"},
+                \"AllDay\": {\"BOOL\": false}
+            }" \
+            --endpoint-url http://localhost:8000 \
+            --region ap-northeast-1 \
+            >> insert_data.log 2>&1
+    done
+
+    echo "Data inserted successfully."
 
 else
     echo "Table '$TABLE_NAME' already exists. Skipping table creation."

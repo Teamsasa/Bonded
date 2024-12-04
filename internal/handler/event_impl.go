@@ -16,8 +16,8 @@ func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatew
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
 			Body:       "Error unmarshalling request: " + err.Error(),
-			}, nil
-		}
+		}, nil
+	}
 	calendarID := request.PathParameters["calendarId"]
 
 	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarID) // カレンダーで返される

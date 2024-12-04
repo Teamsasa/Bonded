@@ -91,7 +91,7 @@ if [ $? -ne 0 ]; then
                     \"DisplayName\": {\"S\": \"${USER}の表示名\"},
                     \"Email\": {\"S\": \"${USER}@example.com\"},
                     \"Password\": {\"S\": \"password\"},
-                    \"AccessLevel\": {\"S\": \"EDITOR\"}
+                    \"AccessLevel\": {\"S\": \"OWNER\"}
                 }" \
                 --endpoint-url http://localhost:8000 \
                 --region ap-northeast-1 \

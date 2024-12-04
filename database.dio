@@ -1,0 +1,73 @@
+<mxfile host="65bd71144e">
+    <diagram id="VXxlya9nV0rqkrs9g2AK" name="ページ1">
+        <mxGraphModel dx="112" dy="827" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="112" value="Partition Key" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="240" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="113" value="CalendarID" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="280" width="120" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="114" value="Sort Key" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="240" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="115" value="USER#&amp;lt;UserID&amp;gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="340" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="116" value="EVENT#&amp;lt;EventID&amp;gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="400" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="117" value="Calendar" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="280" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="122" value="Attributes" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="240" width="320" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="123" value="Name, IsPublic, OwnerUserID" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="280" width="320" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="124" value="DisplayName, Email, Password, AccessLevel" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="340" width="320" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="125" value="Title, Description, StartTime, EndTime, Location, Allday" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="400" width="320" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="126" value="Partition Key" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="560" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="127" value="UserID" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="600" width="120" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="128" value="Sort Key" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="560" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="129" value="USER" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="660" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="130" value="EVENT#&amp;lt;EventID&amp;gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="720" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="131" value="CAL#CalendarID" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="600" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="132" value="Attributes" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="560" width="320" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="133" value="Name, IsPublic, OwnerUserID" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="600" width="320" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="134" value="DisplayName, Email, Password, AccessLevel" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="660" width="320" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="135" value="Title, Description, StartTime, EndTime, Location, Allday" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="720" width="320" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="136" value="GSI&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="520" width="120" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

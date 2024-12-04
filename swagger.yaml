@@ -1,0 +1,234 @@
+openapi: 3.0.0
+info:
+  title: Calendar API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /calendar/create/{userId}:
+    post:
+      summary: カレンダー作成
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                isPublic:
+                  type: boolean
+                users:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/User'
+                events:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Event'
+      responses:
+        '201':
+          description: カレンダーが正常に作成されました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: リクエストが無効です
+        '500':
+          description: サーバーエラー
+
+  /calendar/{calendarId}:
+    get:
+      summary: カレンダー取得
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: カレンダー情報が正常に取得されました
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Calendar'
+        '404':
+          description: カレンダーが見つかりません
+        '500':
+          description: サーバーエラー
+
+  /calendar/edit/{calendarId}:
+    put:
+      summary: カレンダー編集
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                isPublic:
+                  type: boolean
+                ownerUserId:
+                  type: string
+      responses:
+        '200':
+          description: カレンダーが正常に編集されました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: リクエストが無効です
+        '500':
+          description: サーバーエラー
+
+  /calendar/delete/{calendarId}:
+    delete:
+      summary: カレンダー削除
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: カレンダーが正常に削除されました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: サーバーエラー
+
+  /calendar/list/{userId}:
+    get:
+      summary: ユーザーのカレンダー取得
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ユーザーのカレンダーが正常に取得されました
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Calendar'
+        '500':
+          description: サーバーエラー
+
+  /event/create/{calendarId}:
+    post:
+      summary: イベント作成
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+      responses:
+        '201':
+          description: イベントが正常に作成されました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: リクエストが無効です
+        '500':
+          description: サーバーエラー
+
+components:
+  schemas:
+    Calendar:
+      type: object
+      properties:
+        calendarId:
+          type: string
+        sortKey:
+          type: string
+        name:
+          type: string
+        isPublic:
+          type: boolean
+        ownerUserId:
+          type: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        accessLevel:
+          type: string
+    Event:
+      type: object
+      properties:
+        eventId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        location:
+          type: string
+        allDay:
+          type: boolean

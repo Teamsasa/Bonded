@@ -1,14 +1,11 @@
 package models
 
-import "time"
-
 type Event struct {
-	ID          string
-	Title       string
-	Description string
-	CalendarID  string
-	StartTime   time.Time
-	EndTime     time.Time
-	Location    string
-	AllDay      bool
+	EventID     string `json:"eventId" dynamodbav:"EventID"`         // イベントID
+	Title       string `json:"title" dynamodbav:"Title"`             // イベント名
+	Description string `json:"description" dynamodbav:"Description"` // 詳細
+	StartTime   string `json:"startTime" dynamodbav:"StartTime"`     // 開始時間
+	EndTime     string `json:"endTime" dynamodbav:"EndTime"`         // 終了時間
+	Location    string `json:"location" dynamodbav:"Location"`       // 場所
+	AllDay      bool   `json:"allDay" dynamodbav:"AllDay"`           // 終日フラグ
 }

@@ -27,10 +27,10 @@ func (db *DynamoDB) DescribeSampleTable(ctx context.Context) error {
 
 	svc := dynamodb.New(sess)
 
-	input := &dynamodb.DescribeTableInput{
+	inputCalendars := &dynamodb.DescribeTableInput{
 		TableName: aws.String("Calendars"),
 	}
 
-	_, err := svc.DescribeTableWithContext(ctx, input)
+	_, err := svc.DescribeTableWithContext(ctx, inputCalendars)
 	return err
 }

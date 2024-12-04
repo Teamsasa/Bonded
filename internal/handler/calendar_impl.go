@@ -57,19 +57,19 @@ func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGate
 func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	var calendar models.Calendar
 	err := json.Unmarshal([]byte(request.Body), &calendar)
-    if err != nil {
-        return events.APIGatewayProxyResponse{
-            StatusCode: 400,
-            Body:       "Invalid request payload: " + err.Error(),
-        }, nil
-    }
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid request payload: " + err.Error(),
+		}, nil
+	}
 
-    if calendar.Name == "" || calendar.IsPublic == nil {
-        return events.APIGatewayProxyResponse{
-            StatusCode: 400,
-            Body:       "Missing required fields: name or isPublic",
-        }, nil
-    }
+	if calendar.Name == "" || calendar.IsPublic == nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Missing required fields: name or isPublic",
+		}, nil
+	}
 	userID := request.PathParameters["userId"]
 	calendar.OwnerUserID = userID
 

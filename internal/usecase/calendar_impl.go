@@ -15,8 +15,8 @@ func (u *calendarUsecase) CreateCalendar(ctx context.Context, calendar *models.C
 	return u.calendarRepo.Create(ctx, calendar)
 }
 
-func (u *calendarUsecase) EditCalendar(ctx context.Context, calendar *models.Calendar) error {
-	return u.calendarRepo.Edit(ctx, calendar)
+func (u *calendarUsecase) EditCalendar(ctx context.Context, calendar *models.Calendar, input *models.Calendar) error {
+	return u.calendarRepo.Edit(ctx, calendar, input)
 }
 
 func (u *calendarUsecase) DeleteCalendar(ctx context.Context, calendarID string) error {

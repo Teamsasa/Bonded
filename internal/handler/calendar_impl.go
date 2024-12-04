@@ -4,6 +4,8 @@ import (
 	"bonded/internal/models"
 	"context"
 	"encoding/json"
+	"fmt"
+
 	"github.com/aws/aws-lambda-go/events"
 )
 
@@ -88,19 +90,18 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 }
 
 func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	var input struct {
-		Name string `json:"name"`
-	}
+	var input models.Calendar
 	err := json.Unmarshal([]byte(request.Body), &input)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
-			Body:       "Invalid request payload",
+			Body:       "Invalid request payload" + fmt.Sprint(err),
 		}, nil
 	}
 	calendarId := request.PathParameters["calendarId"]
+	input.CalendarID = calendarId
 
-	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarId)
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, input.CalendarID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 404,
@@ -108,8 +109,7 @@ func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGate
 		}, nil
 	}
 
-	calendar.Name = input.Name
-	err = h.CalendarUsecase.EditCalendar(ctx, calendar)
+	err = h.CalendarUsecase.EditCalendar(ctx, calendar, &input)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,

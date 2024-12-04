@@ -33,7 +33,7 @@ func CalendarRepositoryRequest(dynamoClient *db.DynamoDBClient) CalendarReposito
 
 type CalendarRepository interface {
 	Create(ctx context.Context, calendar *models.Calendar) error
-	Edit(ctx context.Context, calendar *models.Calendar) error
+	Edit(ctx context.Context, calendarID *models.Calendar, input *models.Calendar) error
 	Delete(ctx context.Context, calendarID string) error
 	FindByCalendarID(ctx context.Context, calendarID string) (*models.Calendar, error)
 	FindByUserID(ctx context.Context, userID string) ([]*models.Calendar, error)

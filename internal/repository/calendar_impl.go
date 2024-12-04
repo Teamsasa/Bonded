@@ -17,6 +17,7 @@ func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calend
 	}
 	item["SortKey"] = &dynamodb.AttributeValue{S: aws.String("CALENDAR")}
 	item["UserID"] = &dynamodb.AttributeValue{S: aws.String(calendar.OwnerUserID)}
+	item["IsPublic"] = &dynamodb.AttributeValue{BOOL: calendar.IsPublic}
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(r.tableName),
 		Item:      item,
@@ -25,18 +26,34 @@ func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calend
 	return err
 }
 
-func (r *calendarRepository) Edit(ctx context.Context, calendar *models.Calendar) error {
+func (r *calendarRepository) Edit(ctx context.Context, calendarID *models.Calendar, input *models.Calendar) error {
+	calendar, err := r.FindByCalendarID(ctx, calendarID.CalendarID)
+	if err != nil {
+		return err
+	}
+
+	if input.Name != "" {
+		calendar.Name = input.Name
+	}
+	if input.IsPublic != nil {
+		calendar.IsPublic = input.IsPublic
+	}
+	if input.OwnerUserID != "" {
+		calendar.OwnerUserID = input.OwnerUserID
+	}
+
 	item, err := dynamodbattribute.MarshalMap(calendar)
 	if err != nil {
 		return err
 	}
 	item["SortKey"] = &dynamodb.AttributeValue{S: aws.String("CALENDAR")}
 	item["UserID"] = &dynamodb.AttributeValue{S: aws.String(calendar.OwnerUserID)}
-	input := &dynamodb.PutItemInput{
+	item["IsPublic"] = &dynamodb.AttributeValue{BOOL: calendar.IsPublic}
+	updateInput := &dynamodb.PutItemInput{
 		TableName: aws.String(r.tableName),
 		Item:      item,
 	}
-	_, err = r.dynamoDB.PutItemWithContext(ctx, input)
+	_, err = r.dynamoDB.PutItemWithContext(ctx, updateInput)
 	return err
 }
 
@@ -45,14 +62,11 @@ func (r *calendarRepository) Delete(ctx context.Context, calendarID string) erro
 		TableName: aws.String(r.tableName),
 		Key: map[string]*dynamodb.AttributeValue{
 			"CalendarID": {S: aws.String(calendarID)},
-			"SortKey":    {S: aws.String("CALENDAR")}, // SortKeyを追加
+			"SortKey":    {S: aws.String("CALENDAR")},
 		},
 	}
 	_, err := r.dynamoDB.DeleteItemWithContext(ctx, input)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (r *calendarRepository) FindByCalendarID(ctx context.Context, calendarID string) (*models.Calendar, error) {

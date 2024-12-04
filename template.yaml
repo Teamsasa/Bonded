@@ -9,13 +9,25 @@ Globals:
     MemorySize: 128
 
 Resources:
+  BondedApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,OPTIONS'"
+        AllowHeaders: "'Authorization,X-ID-Token,Content-Type'"
+        AllowOrigin: "'http://localhost:5173'"
+
   BondedFunction:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
       Environment:
         Variables:
-          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
+          COGNITO_CLIENT_ID:
+          COGNITO_ISSUER:
+          COGNITO_JWKS_URL:
+          DYNAMODB_ENDPOINT:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: "Calendars"
@@ -27,41 +39,49 @@ Resources:
           Properties: 
             Path: /calendar/{calendarId}
             Method: GET
+            RestApiId: !Ref BondedApi
         CalendarList:
           Type: Api
           Properties:
             Path: /calendar/list/{userId}
             Method: GET
+            RestApiId: !Ref BondedApi
         CalendarCreate:
           Type: Api
           Properties:
             Path: /calendar/create/{userId}
             Method: POST
+            RestApiId: !Ref BondedApi
         CalendarEdit:
           Type: Api
           Properties:
             Path: /calendar/edit/{calendarId}
             Method: PUT
+            RestApiId: !Ref BondedApi
         Hello:
           Type: Api
           Properties:
             Path: /hello
             Method: GET
+            RestApiId: !Ref BondedApi
         DynamoDBTest:
           Type: Api
           Properties:
             Path: /dynamodb-test
             Method: GET
+            RestApiId: !Ref BondedApi
         CalendarDelete:
           Type: Api
           Properties:
             Path: /calendar/delete/{calendarId}
             Method: DELETE
+            RestApiId: !Ref BondedApi
         EventCreate:
           Type: Api
           Properties:
             Path: /event/create/{calendarId}
             Method: POST
+            RestApiId: !Ref BondedApi
 
     Metadata:
       DockerTag: go-provided.al2-v1

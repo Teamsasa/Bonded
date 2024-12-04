@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"bonded/internal/infra/db"
 	"bonded/internal/repository"
 	"bonded/internal/usecase"
 	"context"
@@ -31,18 +30,3 @@ func (h *Handler) HelloHandler(ctx context.Context, request events.APIGatewayPro
 	}, nil
 }
 
-func (h *Handler) DynamoDBTestHandler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	dynamoRepo := db.NewDynamoDB()
-	dynamoUsecase := usecase.DynamoUsecaseRequest(dynamoRepo)
-	err := dynamoUsecase.DynamoDBTest(ctx)
-	if err != nil {
-		return events.APIGatewayProxyResponse{
-			Body:       "Failed to access DynamoDB table: " + err.Error(),
-			StatusCode: 500,
-		}, nil
-	}
-	return events.APIGatewayProxyResponse{
-		Body:       "Successfully accessed DynamoDB table",
-		StatusCode: 200,
-	}, nil
-}

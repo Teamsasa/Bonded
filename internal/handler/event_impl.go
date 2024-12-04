@@ -38,7 +38,7 @@ func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatew
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
-			Body:       "Error updating calendar: " + err.Error(),
+			Body:       "Error creating event: " + err.Error(),
 		}, nil
 	}
 

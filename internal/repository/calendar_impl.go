@@ -15,6 +15,8 @@ func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calend
 	if err != nil {
 		return err
 	}
+	item["SortKey"] = &dynamodb.AttributeValue{S: aws.String("CALENDAR")}
+	item["UserID"] = &dynamodb.AttributeValue{S: aws.String(calendar.OwnerUserID)}
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(r.tableName),
 		Item:      item,
@@ -28,6 +30,8 @@ func (r *calendarRepository) Edit(ctx context.Context, calendar *models.Calendar
 	if err != nil {
 		return err
 	}
+	item["SortKey"] = &dynamodb.AttributeValue{S: aws.String("CALENDAR")}
+	item["UserID"] = &dynamodb.AttributeValue{S: aws.String(calendar.OwnerUserID)}
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(r.tableName),
 		Item:      item,

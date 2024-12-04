@@ -35,14 +35,14 @@ func main() {
 			if request.HTTPMethod == "GET" {
 				return h.HandleGetCalendar(ctx, request)
 			}
-		case "/calendar/list/" + request.PathParameters["userId"]: // 
+		case "/calendar/list/" + request.PathParameters["userId"]: // ok
 			if request.HTTPMethod == "GET" {
 				return h.HandleGetCalendars(ctx, request)
 			}
-		// case "/calendar/create/" + request.PathParameters["userId"]:
-		// 	if request.HTTPMethod == "POST" {
-		// 		return h.HandleCreateCalendar(ctx, request)
-		// 	}
+		case "/calendar/create/" + request.PathParameters["userId"]: // ok
+			if request.HTTPMethod == "POST" {
+				return h.HandleCreateCalendar(ctx, request)
+			}
 		case "/calendar/edit/" + request.PathParameters["calendarId"]:
 			if request.HTTPMethod == "PUT" {
 				return h.HandleEditCalendar(ctx, request)

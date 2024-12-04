@@ -15,9 +15,24 @@ if [ $? -ne 0 ]; then
             AttributeName=UserID,AttributeType=S \
             AttributeName=CalendarID,AttributeType=S \
         --key-schema \
-            AttributeName=UserID,KeyType=HASH \
-            AttributeName=CalendarID,KeyType=RANGE \
+            AttributeName=CalendarID,KeyType=HASH \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+        --global-secondary-indexes \
+            "[
+                {
+                    \"IndexName\": \"UserID-index\",
+                    \"KeySchema\": [
+                        {\"AttributeName\":\"UserID\",\"KeyType\":\"HASH\"}
+                    ],
+                    \"Projection\":{
+                        \"ProjectionType\":\"ALL\"
+                    },
+                    \"ProvisionedThroughput\": {
+                        \"ReadCapacityUnits\": 5,
+                        \"WriteCapacityUnits\": 5
+                    }
+                }
+            ]" \
         --endpoint-url http://localhost:8000 \
         --region ap-northeast-1 \
         > create_table.log 2>&1
@@ -43,14 +58,37 @@ if [ $? -ne 0 ]; then
     aws dynamodb put-item \
       --table-name "$TABLE_NAME" \
       --item '{
-          "UserID": {"S": "user1"},
           "CalendarID": {"S": "1"},
-          "Name": {"S": "Test User"},
-          "Event": {
+          "Name": {"S": "Test Calendar 1"},
+          "IsPublic": {"BOOL": true},
+          "OwnerUserID": {"S": "user1"},
+          "Users": {
               "L": [
                   {
                       "M": {
-                          "EventID": {"S": "1"},
+                          "UserID": {"S": "user1"},
+                          "DisplayName": {"S": "ユーザー1の表示名"},
+                          "Email": {"S": "user1@example.com"},
+                          "Password": {"S": "password1"},
+                          "AccessLevel": {"S": "OWNER"}
+                      }
+                  },
+                  {
+                      "M": {
+                          "UserID": {"S": "user2"},
+                          "DisplayName": {"S": "ユーザー2の表示名"},
+                          "Email": {"S": "user2@example.com"},
+                          "Password": {"S": "password2"},
+                          "AccessLevel": {"S": "EDITOR"}
+                      }
+                  }
+              ]
+          },
+          "Events": {
+              "L": [
+                  {
+                      "M": {
+                          "EventID": {"S": "event1"},
                           "Title": {"S": "Test Event 1"},
                           "Description": {"S": "This is a test event 1"},
                           "StartTime": {"S": "2021-08-01T00:00:00Z"},
@@ -61,7 +99,7 @@ if [ $? -ne 0 ]; then
                   },
                   {
                       "M": {
-                          "EventID": {"S": "2"},
+                          "EventID": {"S": "event2"},
                           "Title": {"S": "Test Event 2"},
                           "Description": {"S": "This is a test event 2"},
                           "StartTime": {"S": "2021-08-02T00:00:00Z"},

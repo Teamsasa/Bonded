@@ -88,7 +88,6 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 }
 
 func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	calendarId := request.PathParameters["calendarId"]
 	var input struct {
 		Name string `json:"name"`
 	}
@@ -99,6 +98,7 @@ func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGate
 			Body:       "Invalid request payload",
 		}, nil
 	}
+	calendarId := request.PathParameters["calendarId"]
 
 	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarId)
 	if err != nil {

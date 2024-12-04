@@ -31,10 +31,11 @@ func main() {
 	dynamoClient := db.DynamoDBClientRequest()
 	calendarRepo := repository.CalendarRepositoryRequest(dynamoClient)
 	eventRepo := repository.EventRepositoryRequest(dynamoClient)
-	caredarUsecase := usecase.CalendarUsecaseRequest(calendarRepo, eventRepo)
+	userRepo := repository.UserRepositoryRequest(dynamoClient)
+	caledarUsecase := usecase.CalendarUsecaseRequest(calendarRepo, eventRepo, userRepo)
 	authUsecase := usecase.NewAuthUsecase(jwks, clientID, cognitoIssuer)
 	middleware := middleware.NewAuthMiddleware(authUsecase)
-	h := handler.HandlerRequest(calendarRepo, caredarUsecase)
+	h := handler.HandlerRequest(caledarUsecase)
 
 	lambda.Start(func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 		authenticatedHandler := middleware.AuthMiddleware(func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {

@@ -14,9 +14,8 @@ type Handler struct {
 	EventUsecase    usecase.EventUsecase
 }
 
-func HandlerRequest(repo repository.CalendarRepository, usecase usecase.Usecase) *Handler {
+func HandlerRequest(usecase usecase.Usecase) *Handler {
 	return &Handler{
-		Repo:            repo,
 		CalendarUsecase: usecase.Calendar(),
 		EventUsecase:    usecase.Event(),
 	}

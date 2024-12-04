@@ -11,6 +11,7 @@ import (
 )
 
 func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calendar) error {
+	fmt.Println(calendar.Users[0].DisplayName)
 	item, err := dynamodbattribute.MarshalMap(calendar)
 	if err != nil {
 		return err

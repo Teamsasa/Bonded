@@ -6,10 +6,11 @@ import (
 	"context"
 )
 
-func CalendarUsecaseRequest(calendarRepo repository.CalendarRepository, eventRepo repository.EventRepository) Usecase {
+func CalendarUsecaseRequest(calendarRepo repository.CalendarRepository, eventRepo repository.EventRepository, userRepo repository.UserRepository) Usecase {
 	return &usecase{
 		calendarUsecase: &calendarUsecase{
 			calendarRepo: calendarRepo,
+			userRepo:     userRepo,
 		},
 		eventUsecase: &eventUsecase{
 			eventRepo: eventRepo,
@@ -24,6 +25,7 @@ type usecase struct {
 
 type calendarUsecase struct {
 	calendarRepo repository.CalendarRepository
+	userRepo     repository.UserRepository
 }
 
 type eventUsecase struct {
@@ -44,7 +46,7 @@ func (u *usecase) Event() EventUsecase {
 }
 
 type CalendarUsecase interface {
-	CreateCalendar(ctx context.Context, calendar *models.Calendar) error
+	CreateCalendar(ctx context.Context, calendar *models.CreateCalendar) error
 	EditCalendar(ctx context.Context, calendar *models.Calendar, input *models.Calendar) error
 	DeleteCalendar(ctx context.Context, calendarID string) error
 	FindCalendars(ctx context.Context, userID string) ([]*models.Calendar, error)

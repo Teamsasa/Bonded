@@ -126,7 +126,7 @@ paths:
         '500':
           description: サーバーエラー
 
-  /calendars/{userId}:
+  /calendar/list/{userId}:
     get:
       summary: ユーザーのカレンダー取得
       parameters:

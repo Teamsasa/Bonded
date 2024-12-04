@@ -10,15 +10,15 @@ import (
 )
 
 func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	calendarID := request.PathParameters["calendarId"]
 	var event models.Event
 	err := json.Unmarshal([]byte(request.Body), &event)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
 			Body:       "Error unmarshalling request: " + err.Error(),
-		}, nil
-	}
+			}, nil
+		}
+	calendarID := request.PathParameters["calendarId"]
 
 	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarID) // カレンダーで返される
 	if err != nil {

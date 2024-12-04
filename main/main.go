@@ -51,7 +51,7 @@ func main() {
 			if request.HTTPMethod == "DELETE" {
 				return h.HandleDeleteCalendar(ctx, request)
 			}
-		case "/event/create/" + request.PathParameters["calendarId"]:
+		case "/event/create/" + request.PathParameters["calendarId"]: //
 			if request.HTTPMethod == "POST" {
 				return h.HandleCreateEvent(ctx, request)
 			}

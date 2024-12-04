@@ -31,9 +31,8 @@ func main() {
 
 	dynamoClient := db.DynamoDBClientRequest()
 	calendarRepo := repository.CalendarRepositoryRequest(dynamoClient)
-	authRepo := repository.NewAuthRepository(dynamoClient)
 	appUsecase := usecase.CalendarUsecaseRequest(calendarRepo)
-	authUsecase := usecase.NewAuthUsecase(authRepo, jwks, clientID, cognitoIssuer)
+	authUsecase := usecase.NewAuthUsecase(jwks, clientID, cognitoIssuer)
 	middleware := middleware.NewAuthMiddleware(authUsecase)
 	h := handler.HandlerRequest(calendarRepo, appUsecase)
 

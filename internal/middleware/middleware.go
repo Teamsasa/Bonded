@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 type contextKey string
@@ -47,17 +46,6 @@ func (am *authMiddleware) AuthMiddleware(next func(ctx context.Context, request 
 		jwtData, err := am.authUsecase.ValidateJWT(idToken)
 		if err != nil {
 			return unauthorizedResponse(err.Error())
-		}
-
-		claims := jwtData.Claims.(jwt.MapClaims)
-		sub := claims["sub"].(string)
-
-		err = am.authUsecase.FindOrCreateUserByID(ctx, sub)
-		if err != nil {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 500,
-				Body:       err.Error(),
-			}, nil
 		}
 
 		ctx = context.WithValue(ctx, jwtDataKey, jwtData)

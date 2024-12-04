@@ -12,7 +12,7 @@ type IAuthUsecase interface {
 	ValidateJWT(tokenString string) (*jwt.Token, error)
 }
 
-type AuthUsecase struct { 
+type AuthUsecase struct {
 	jwks          *keyfunc.JWKS
 	clientID      string
 	cognitoIssuer string

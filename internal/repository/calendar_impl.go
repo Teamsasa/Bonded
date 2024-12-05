@@ -28,9 +28,6 @@ func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calend
 		TableName: aws.String(r.tableName),
 		Item:      relatedItem,
 	}
-
-	fmt.Println("Inserted Related item:\n", relatedItem)
-
 	_, err := r.dynamoDB.PutItemWithContext(ctx, relatedInput)
 	if err != nil {
 		return err
@@ -59,8 +56,6 @@ func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calend
 		TableName: aws.String(r.tableName),
 		Item:      mainItem,
 	}
-
-	fmt.Println("Inserted Calendar item:\n", mainItem)
 
 	_, err = r.dynamoDB.PutItemWithContext(ctx, mainInput)
 	if err != nil {
@@ -96,9 +91,6 @@ func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calend
 		TableName: aws.String(r.tableName),
 		Item:      userItem,
 	}
-
-	fmt.Println("Inserted User item:\n", userItem)
-
 	_, err = r.dynamoDB.PutItemWithContext(ctx, userInput)
 	if err != nil {
 		return err
@@ -245,9 +237,6 @@ func (r *calendarRepository) FindByUserID(ctx context.Context, userID string) ([
 			calendars = append(calendars, calendar)
 			calendarIDSet[calendarID] = struct{}{}
 		}
-	}
-	for _, calendar := range calendars {
-		fmt.Printf("CalendarID: %s, Users: %+v\n", calendar.CalendarID, calendar.Users)
 	}
 
 	return calendars, nil

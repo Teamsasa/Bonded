@@ -145,7 +145,7 @@ func (h *Handler) HandleFollowCalendar(ctx context.Context, request events.APIGa
 			Body:       "Error finding calendar: " + err.Error(),
 		}, nil
 	}
-	if *calendar.IsPublic == false {
+	if !*calendar.IsPublic {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 403,
 			Body:       "Calendar is not public",

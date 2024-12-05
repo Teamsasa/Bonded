@@ -20,7 +20,7 @@ func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatew
 	}
 	calendarID := request.PathParameters["calendarId"]
 
-	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarID) // カレンダーで返される
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -45,5 +45,28 @@ func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatew
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
 		Body:       `{"message":"Event created successfully."}`,
+	}, nil
+}
+
+func (h *Handler) HandleGetEventList(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	calendarID := request.PathParameters["calendarId"]
+	eventList, err := h.EventUsecase.FindEvents(ctx, calendarID)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error finding calendar: " + err.Error(),
+		}, nil
+	}
+
+	body, err := json.Marshal(eventList)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error marshalling response: " + err.Error(),
+		}, nil
+	}
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       string(body),
 	}, nil
 }

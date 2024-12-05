@@ -56,12 +56,19 @@ func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGate
 
 func (h *Handler) HandleGetPublicCalendars(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendars, err := h.CalendarUsecase.FindPublicCalendars(ctx)
-	if err != nil || calendars == nil {
+	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "Error finding public calendars: " + err.Error(),
 		}, nil
 	}
+	if calendars == nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 404,
+			Body:       "No public calendars found",
+		}, nil
+	}
+
 	body, err := json.Marshal(calendars)
 	if err != nil {
 		return events.APIGatewayProxyResponse{

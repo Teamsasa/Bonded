@@ -201,6 +201,8 @@ paths:
 
   /calendar/public/list:
     get:
+      tags:
+        - Calendar
       summary: 公開カレンダー取得
       responses:
         '200':
@@ -211,6 +213,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Calendar'
+        '404':
+          description: 公開カレンダーが見つかりません'
+        '500':
+          description: サーバーエラー
+
   /event/list/{calendarId}:
     get:
       tags:

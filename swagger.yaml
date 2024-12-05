@@ -42,7 +42,7 @@ paths:
                 events:
                   type: array
                   items:
-                    $ref: '#/components/schemas/Event'
+                    $ref: '#/components/schemas/EventModel'
       responses:
         '201':
           description: カレンダーが正常に作成されました
@@ -183,7 +183,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Event'
+              $ref: '#/components/schemas/EventModel'
       responses:
         '201':
           description: イベントが正常に作成されました
@@ -242,6 +242,61 @@ paths:
         '500':
           description: サーバーエラー
 
+  /calendar/{calendarId}/event:
+    put:
+      tags:
+        - Event
+      summary: イベントの編集
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventEdit'
+      responses:
+        '200':
+          description: 正常に更新されました
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventEdit'
+        '400':
+          description: リクエストが不正です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error unmarshalling request: <error message>"
+        '404':
+          description: イベントが見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Event not found"
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error editing event: <error message>"
+
 components:
   schemas:
     Calendar:
@@ -264,7 +319,7 @@ components:
         events:
           type: array
           items:
-            $ref: '#/components/schemas/Event'
+            $ref: '#/components/schemas/EventModel'
     User:
       type: object
       properties:
@@ -278,7 +333,7 @@ components:
           type: string
         accessLevel:
           type: string
-    Event:
+    EventModel:
       type: object
       properties:
         eventId:
@@ -295,3 +350,31 @@ components:
           type: string
         allDay:
           type: boolean
+    EventEdit:
+      type: object
+      required:
+        - eventId
+      properties:
+        eventId:
+          type: string
+          example: "event1"
+        title:
+          type: string
+          example: "Test Event event1"
+        description:
+          type: string
+          example: "This is test event event1"
+        startTime:
+          type: string
+          format: date-time
+          example: "2021-08-01T00:00:00Z"
+        endTime:
+          type: string
+          format: date-time
+          example: "2021-08-01T01:00:00Z"
+        location:
+          type: string
+          example: "場所event1"
+        allDay:
+          type: boolean
+          example: false

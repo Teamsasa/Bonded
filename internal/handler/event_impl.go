@@ -48,6 +48,39 @@ func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatew
 	}, nil
 }
 
+func (h *Handler) HandleEditEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var event models.Event
+	err := json.Unmarshal([]byte(request.Body), &event)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Error unmarshalling request: " + err.Error(),
+		}, nil
+	}
+
+	calendarID := request.PathParameters["calendarId"]
+	updatedEvent, err := h.EventUsecase.EditEvent(ctx, calendarID, &event)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error editing event: " + err.Error(),
+		}, nil
+	}
+
+	updatedEventJSON, err := json.Marshal(updatedEvent)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error marshalling response: " + err.Error(),
+		}, nil
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       string(updatedEventJSON),
+	}, nil
+}
+
 func (h *Handler) HandleGetEventList(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendarID := request.PathParameters["calendarId"]
 	eventList, err := h.EventUsecase.FindEvents(ctx, calendarID)

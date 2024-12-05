@@ -68,11 +68,15 @@ func main() {
 				if request.HTTPMethod == "DELETE" {
 					return h.HandleDeleteCalendar(ctx, request)
 				}
-			case "/event/create/" + request.PathParameters["calendarId"]: //
+			case "/event/create/" + request.PathParameters["calendarId"]:
 				if request.HTTPMethod == "POST" {
 					return h.HandleCreateEvent(ctx, request)
 				}
-			case "/event/list/" + request.PathParameters["calendarId"]: //
+			case "/event/edit/" + request.PathParameters["calendarId"]:
+				if request.HTTPMethod == "PUT" {
+					return h.HandleEditEvent(ctx, request)
+				}
+			case "/event/list/" + request.PathParameters["calendarId"]:
 				if request.HTTPMethod == "GET" {
 					return h.HandleGetEventList(ctx, request)
 				}

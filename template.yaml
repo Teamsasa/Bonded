@@ -88,6 +88,12 @@ Resources:
             Path: /event/create/{calendarId}
             Method: POST
             RestApiId: !Ref BondedApi
+        EventEdit:
+          Type: Api
+          Properties:
+            Path: /event/edit/{calendarId}
+            Method: PUT
+            RestApiId: !Ref BondedApi
         EventList:
           Type: Api
           Properties:

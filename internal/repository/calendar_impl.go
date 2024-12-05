@@ -243,20 +243,20 @@ func (r *calendarRepository) FindByUserID(ctx context.Context, userID string) ([
 }
 
 func (r *calendarRepository) FindAllCalendars(ctx context.Context) ([]*models.Calendar, error) {
-    // カレンダーのメイン情報を全件取得
-    input := &dynamodb.ScanInput{
-        TableName: aws.String(r.tableName),
-        FilterExpression: aws.String("SortKey = :sk"),
-        ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-            ":sk": {S: aws.String("CALENDAR")},
-        },
-    }
-    result, err := r.dynamoDB.ScanWithContext(ctx, input)
-    if err != nil {
-        return nil, err
-    }
+	// カレンダーのメイン情報を全件取得
+	input := &dynamodb.ScanInput{
+		TableName:        aws.String(r.tableName),
+		FilterExpression: aws.String("SortKey = :sk"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":sk": {S: aws.String("CALENDAR")},
+		},
+	}
+	result, err := r.dynamoDB.ScanWithContext(ctx, input)
+	if err != nil {
+		return nil, err
+	}
 
-    // カレンダー情報を取得
+	// カレンダー情報を取得
 	var calendars []*models.Calendar
 	calendarIDSet := make(map[string]struct{})
 	for _, item := range result.Items {

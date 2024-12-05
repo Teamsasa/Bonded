@@ -107,6 +107,8 @@ paths:
                 properties:
                   message:
                     type: string
+        '403':
+          description: カレンダーは公開されていません
         '500':
           description: サーバーエラー
 

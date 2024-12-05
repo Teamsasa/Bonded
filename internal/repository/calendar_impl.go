@@ -11,20 +11,100 @@ import (
 )
 
 func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calendar) error {
-	fmt.Println(calendar.Users[0].DisplayName)
-	item, err := dynamodbattribute.MarshalMap(calendar)
+	// 1. 関連アイテムの作成
+	relatedItem := map[string]*dynamodb.AttributeValue{
+		"CalendarID": {
+			S: aws.String(calendar.CalendarID),
+		},
+		"SortKey": {
+			S: aws.String(fmt.Sprintf("CAL#%s#%s", calendar.CalendarID, calendar.OwnerUserID)),
+		},
+		"UserID": {
+			S: aws.String(calendar.OwnerUserID),
+		},
+	}
+
+	relatedInput := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      relatedItem,
+	}
+
+	fmt.Println("Inserted Related item:\n", relatedItem)
+
+	_, err := r.dynamoDB.PutItemWithContext(ctx, relatedInput)
 	if err != nil {
 		return err
 	}
-	item["SortKey"] = &dynamodb.AttributeValue{S: aws.String("CALENDAR")}
-	item["UserID"] = &dynamodb.AttributeValue{S: aws.String(calendar.OwnerUserID)}
-	item["IsPublic"] = &dynamodb.AttributeValue{BOOL: calendar.IsPublic}
-	input := &dynamodb.PutItemInput{
-		TableName: aws.String(r.tableName),
-		Item:      item,
+
+	// 2. メインカレンダーアイテムの作成
+	mainItem := map[string]*dynamodb.AttributeValue{
+		"SortKey": {
+			S: aws.String("CALENDAR"),
+		},
+		"OwnerUserID": {
+			S: aws.String(calendar.OwnerUserID),
+		},
+		"CalendarID": {
+			S: aws.String(calendar.CalendarID),
+		},
+		"IsPublic": {
+			BOOL: aws.Bool(*calendar.IsPublic),
+		},
+		"Name": {
+			S: aws.String(calendar.Name),
+		},
 	}
-	_, err = r.dynamoDB.PutItemWithContext(ctx, input)
-	return err
+
+	mainInput := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      mainItem,
+	}
+
+	fmt.Println("Inserted Calendar item:\n", mainItem)
+
+	_, err = r.dynamoDB.PutItemWithContext(ctx, mainInput)
+	if err != nil {
+		return err
+	}
+
+	// 3. ユーザーアイテムの作成
+	userItem := map[string]*dynamodb.AttributeValue{
+		"Email": {
+			S: aws.String(calendar.Users[0].Email),
+		},
+		"CalendarID": {
+			S: aws.String(calendar.CalendarID),
+		},
+		"UserID": {
+			S: aws.String(calendar.Users[0].UserID),
+		},
+		"DisplayName": {
+			S: aws.String(calendar.Users[0].DisplayName),
+		},
+		"SortKey": {
+			S: aws.String(fmt.Sprintf("USER#%s", calendar.Users[0].UserID)),
+		},
+		"AccessLevel": {
+			S: aws.String(calendar.Users[0].AccessLevel),
+		},
+		"Password": {
+			S: aws.String(calendar.Users[0].Password),
+		},
+	}
+
+	userInput := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      userItem,
+	}
+
+	fmt.Println("Inserted User item:\n", userItem)
+
+	_, err = r.dynamoDB.PutItemWithContext(ctx, userInput)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *calendarRepository) Edit(ctx context.Context, calendarID *models.Calendar, input *models.Calendar) error {
@@ -165,6 +245,9 @@ func (r *calendarRepository) FindByUserID(ctx context.Context, userID string) ([
 			calendars = append(calendars, calendar)
 			calendarIDSet[calendarID] = struct{}{}
 		}
+	}
+	for _, calendar := range calendars {
+		fmt.Printf("CalendarID: %s, Users: %+v\n", calendar.CalendarID, calendar.Users)
 	}
 
 	return calendars, nil

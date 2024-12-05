@@ -28,4 +28,3 @@ func (h *Handler) HelloHandler(ctx context.Context, request events.APIGatewayPro
 		StatusCode: 200,
 	}, nil
 }
-

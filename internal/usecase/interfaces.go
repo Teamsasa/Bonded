@@ -49,6 +49,7 @@ type CalendarUsecase interface {
 	CreateCalendar(ctx context.Context, calendar *models.CreateCalendar) error
 	EditCalendar(ctx context.Context, calendar *models.Calendar, input *models.Calendar) error
 	DeleteCalendar(ctx context.Context, calendarID string) error
+	FindPublicCalendars(ctx context.Context) ([]*models.Calendar, error)
 	FindCalendars(ctx context.Context, userID string) ([]*models.Calendar, error)
 	FindCalendar(ctx context.Context, calendarID string) (*models.Calendar, error)
 }

@@ -88,6 +88,12 @@ Resources:
             Path: /event/create/{calendarId}
             Method: POST
             RestApiId: !Ref BondedApi
+        EventList:
+          Type: Api
+          Properties:
+            Path: /event/list/{calendarId}
+            Method: GET
+            RestApiId: !Ref BondedApi
 
     Metadata:
       DockerTag: go-provided.al2-v1

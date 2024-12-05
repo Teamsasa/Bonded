@@ -43,6 +43,7 @@ type CalendarRepository interface {
 
 type EventRepository interface {
 	CreateEvent(ctx context.Context, calendar *models.Calendar, event *models.Event) error
+	FindEvents(ctx context.Context, calendarID string) ([]*models.Event, error)
 }
 
 type userRepository struct {

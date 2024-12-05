@@ -42,3 +42,31 @@ func (r *eventRepository) CreateEvent(ctx context.Context, calendar *models.Cale
 	_, err = r.dynamoDB.PutItemWithContext(ctx, gsiInput)
 	return err
 }
+
+func (r *eventRepository) FindEvents(ctx context.Context, calendarID string) ([]*models.Event, error) {
+	input := &dynamodb.QueryInput{
+		TableName:              aws.String(r.tableName),
+		KeyConditionExpression: aws.String("CalendarID = :calendarID AND begins_with(SortKey, :sortPrefix)"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":calendarID": {S: aws.String(calendarID)},
+			":sortPrefix": {S: aws.String("EVENT#")},
+		},
+	}
+
+	result, err := r.dynamoDB.QueryWithContext(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+
+	events := make([]*models.Event, 0, len(result.Items))
+	for _, item := range result.Items {
+		var event models.Event
+		err = dynamodbattribute.UnmarshalMap(item, &event)
+		if err != nil {
+			return nil, err
+		}
+		events = append(events, &event)
+	}
+
+	return events, nil
+}

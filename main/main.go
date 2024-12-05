@@ -72,6 +72,10 @@ func main() {
 				if request.HTTPMethod == "POST" {
 					return h.HandleCreateEvent(ctx, request)
 				}
+			case "/event/list/" + request.PathParameters["calendarId"]: //
+				if request.HTTPMethod == "GET" {
+					return h.HandleGetEventList(ctx, request)
+				}
 			}
 			return events.APIGatewayProxyResponse{
 				StatusCode: 404,

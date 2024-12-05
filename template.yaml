@@ -34,53 +34,11 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: "Events"
       Events:
-        Calendar:
-          Type: Api
-          Properties: 
-            Path: /calendar/{calendarId}
-            Method: GET
-            RestApiId: !Ref BondedApi
-        CalendarList:
+        ProxyResource:
           Type: Api
           Properties:
-            Path: /calendar/list/{userId}
-            Method: GET
-            RestApiId: !Ref BondedApi
-        CalendarCreate:
-          Type: Api
-          Properties:
-            Path: /calendar/create/{userId}
-            Method: POST
-            RestApiId: !Ref BondedApi
-        CalendarEdit:
-          Type: Api
-          Properties:
-            Path: /calendar/edit/{calendarId}
-            Method: PUT
-            RestApiId: !Ref BondedApi
-        Hello:
-          Type: Api
-          Properties:
-            Path: /hello
-            Method: GET
-            RestApiId: !Ref BondedApi
-        DynamoDBTest:
-          Type: Api
-          Properties:
-            Path: /dynamodb-test
-            Method: GET
-            RestApiId: !Ref BondedApi
-        CalendarDelete:
-          Type: Api
-          Properties:
-            Path: /calendar/delete/{calendarId}
-            Method: DELETE
-            RestApiId: !Ref BondedApi
-        EventCreate:
-          Type: Api
-          Properties:
-            Path: /event/create/{calendarId}
-            Method: POST
+            Path: /{proxy+}
+            Method: ANY
             RestApiId: !Ref BondedApi
 
     Metadata:

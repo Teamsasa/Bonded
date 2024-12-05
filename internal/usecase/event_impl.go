@@ -10,3 +10,7 @@ func (u *eventUsecase) CreateEvent(ctx context.Context, calendar *models.Calenda
 	event.EventID = uuid.New().String()
 	return u.eventRepo.CreateEvent(ctx, calendar, event)
 }
+
+func (u *eventUsecase) FindEvents(ctx context.Context, calendarID string) ([]*models.Event, error) {
+	return u.eventRepo.FindEvents(ctx, calendarID)
+}

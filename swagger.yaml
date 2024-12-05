@@ -81,6 +81,35 @@ paths:
         '500':
           description: サーバーエラー
 
+  /calendar/follow/{calendarId}/{userId}:
+    put:
+      tags:
+        - Calendar
+      summary: カレンダーフォロー
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: カレンダーが正常にフォローされました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: サーバーエラー
+
   /calendar/edit/{calendarId}:
     put:
       tags:

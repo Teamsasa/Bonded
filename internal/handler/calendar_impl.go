@@ -134,3 +134,33 @@ func (h *Handler) HandleDeleteCalendar(ctx context.Context, request events.APIGa
 		Body:       `{"message":"Calendar deleted successfully."}`,
 	}, nil
 }
+
+func (h *Handler) HandleFollowCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	calendarId := request.PathParameters["calendarId"]
+	userId := request.PathParameters["userId"]
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarId)
+	if err != nil || calendar == nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error finding calendar: " + err.Error(),
+		}, nil
+	}
+	if *calendar.IsPublic == false {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 403,
+			Body:       "Calendar is not public",
+		}, nil
+	}
+
+	err = h.CalendarUsecase.FollowCalendar(ctx, calendar, userId)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error following calendar: " + err.Error(),
+		}, nil
+	}
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       `{"message":"Calendar followed successfully."}`,
+	}, nil
+}

@@ -3,6 +3,7 @@ package usecase
 import (
 	"bonded/internal/models"
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -54,4 +55,13 @@ func (u *calendarUsecase) DeleteCalendar(ctx context.Context, calendarID string)
 
 func (u *calendarUsecase) FindCalendars(ctx context.Context, userID string) ([]*models.Calendar, error) {
 	return u.calendarRepo.FindByUserID(ctx, userID)
+}
+
+func (u *calendarUsecase) FollowCalendar(ctx context.Context, calendar *models.Calendar, userID string) error {
+    user, err := u.userRepo.FindByUserID(ctx, userID)
+    if err != nil || user == nil {
+        fmt.Println("user not found")
+        return err
+    }
+    return u.calendarRepo.FollowCalendar(ctx, calendar, user)
 }

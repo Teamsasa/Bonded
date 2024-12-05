@@ -4,9 +4,16 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:3000
+tags:
+  - name: Calendar
+    description: カレンダー関連のAPI
+  - name: Event
+    description: イベント関連のAPI
 paths:
   /calendar/create/{userId}:
     post:
+      tags:
+        - Calendar
       summary: カレンダー作成
       parameters:
         - name: userId
@@ -53,6 +60,8 @@ paths:
 
   /calendar/{calendarId}:
     get:
+      tags:
+        - Calendar
       summary: カレンダー取得
       parameters:
         - name: calendarId
@@ -74,6 +83,8 @@ paths:
 
   /calendar/edit/{calendarId}:
     put:
+      tags:
+        - Calendar
       summary: カレンダー編集
       parameters:
         - name: calendarId
@@ -111,6 +122,8 @@ paths:
 
   /calendar/delete/{calendarId}:
     delete:
+      tags:
+        - Calendar
       summary: カレンダー削除
       parameters:
         - name: calendarId
@@ -133,6 +146,8 @@ paths:
 
   /calendar/list/{userId}:
     get:
+      tags:
+        - Calendar
       summary: ユーザーのカレンダー取得
       parameters:
         - name: userId
@@ -154,6 +169,8 @@ paths:
 
   /event/create/{calendarId}:
     post:
+      tags:
+        - Event
       summary: イベント作成
       parameters:
         - name: calendarId
@@ -179,6 +196,30 @@ paths:
                     type: string
         '400':
           description: リクエストが無効です
+        '500':
+          description: サーバーエラー
+
+  /event/list/{calendarId}:
+    get:
+      tags:
+        - Event
+      summary: イベント一覧取得
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: カレンダーのイベント一覧が正常に取得されました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
         '500':
           description: サーバーエラー
 

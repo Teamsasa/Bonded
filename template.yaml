@@ -46,6 +46,12 @@ Resources:
             Path: /calendar/list/{userId}
             Method: GET
             RestApiId: !Ref BondedApi
+        CalendarFollow:
+          Type: Api
+          Properties:
+            Path: /calendar/follow/{calendarId}/{userId}
+            Method: PUT
+            RestApiId: !Ref BondedApi
         CalendarCreate:
           Type: Api
           Properties:

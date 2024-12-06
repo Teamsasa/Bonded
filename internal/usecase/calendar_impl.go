@@ -3,7 +3,7 @@ package usecase
 import (
 	"bonded/internal/models"
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/google/uuid"
 )
@@ -63,7 +63,7 @@ func (u *calendarUsecase) FollowCalendar(ctx context.Context, calendar *models.C
 		return err
 	}
 	if user == nil {
-		return fmt.Errorf("user not found")
+		return errors.New("user not found")
 	}
 
 	return u.calendarRepo.FollowCalendar(ctx, calendar, user)

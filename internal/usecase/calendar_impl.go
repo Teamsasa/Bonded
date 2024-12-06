@@ -1,14 +1,46 @@
 package usecase
 
 import (
+	"bonded/internal/contextKey"
 	"bonded/internal/models"
 	"context"
+	"errors"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 )
 
 func (u *calendarUsecase) FindCalendar(ctx context.Context, calendarID string) (*models.Calendar, error) {
-	return u.calendarRepo.FindByCalendarID(ctx, calendarID)
+	calendarData, err := u.calendarRepo.FindByCalendarID(ctx, calendarID)
+	if err != nil {
+		return nil, err
+	}
+
+	if !*calendarData.IsPublic {
+		jwtData, ok := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
+		if !ok {
+			return nil, errors.New("failed to get JWT data from context")
+		}
+
+		accessUserID, ok := jwtData.Claims.(jwt.MapClaims)["sub"].(string)
+		if !ok {
+			return nil, errors.New("failed to get UserID from JWT data")
+		}
+
+		isExist := false
+		for _, user := range calendarData.Users {
+			if user.UserID == accessUserID {
+				isExist = true
+				break
+			}
+		}
+
+		if !isExist {
+			return nil, errors.New("access user is not registered in the calendar")
+		}
+	}
+
+	return calendarData, nil
 }
 
 func (u *calendarUsecase) FindPublicCalendars(ctx context.Context) ([]*models.Calendar, error) {

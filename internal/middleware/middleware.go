@@ -1,16 +1,13 @@
 package middleware
 
 import (
+	"bonded/internal/contextKey"
 	"bonded/internal/usecase"
 	"context"
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 )
-
-type contextKey string
-
-const jwtDataKey contextKey = "jwtData"
 
 type IAuthMiddleware interface {
 	AuthMiddleware(next func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)) func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
@@ -48,7 +45,7 @@ func (am *authMiddleware) AuthMiddleware(next func(ctx context.Context, request 
 			return unauthorizedResponse(err.Error())
 		}
 
-		ctx = context.WithValue(ctx, jwtDataKey, jwtData)
+		ctx = context.WithValue(ctx, contextKey.JwtDataKey, jwtData)
 
 		return next(ctx, request)
 	}

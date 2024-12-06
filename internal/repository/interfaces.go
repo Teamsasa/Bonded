@@ -39,6 +39,7 @@ type CalendarRepository interface {
 	FindAllCalendars(ctx context.Context) ([]*models.Calendar, error)
 	FindByCalendarID(ctx context.Context, calendarID string) (*models.Calendar, error)
 	FindByUserID(ctx context.Context, userID string) ([]*models.Calendar, error)
+	UnfollowCalendar(ctx context.Context, calendar *models.Calendar, user *models.User) error
 	FollowCalendar(ctx context.Context, calendar *models.Calendar, user *models.User) error
 }
 

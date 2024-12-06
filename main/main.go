@@ -60,6 +60,10 @@ func main() {
 				if request.HTTPMethod == "GET" {
 					return h.HandleGetPublicCalendars(ctx, request)
 				}
+			case "/calendar/unfollow/" + request.PathParameters["userId"]: // ok
+				if request.HTTPMethod == "DELETE" {
+					return h.HandleUnfollowCalendar(ctx, request)
+				}
 			case "/calendar/create/" + request.PathParameters["userId"]: // ok
 				if request.HTTPMethod == "POST" {
 					return h.HandleCreateCalendar(ctx, request)

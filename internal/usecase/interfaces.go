@@ -13,8 +13,8 @@ func CalendarUsecaseRequest(calendarRepo repository.CalendarRepository, eventRep
 			userRepo:     userRepo,
 		},
 		eventUsecase: &eventUsecase{
-			eventRepo: eventRepo,
-			calendarRepo:  calendarRepo,
+			eventRepo:    eventRepo,
+			calendarRepo: calendarRepo,
 		},
 	}
 }
@@ -30,8 +30,8 @@ type calendarUsecase struct {
 }
 
 type eventUsecase struct {
-	eventRepo repository.EventRepository
-	calendarRepo  repository.CalendarRepository
+	eventRepo    repository.EventRepository
+	calendarRepo repository.CalendarRepository
 }
 
 type Usecase interface {

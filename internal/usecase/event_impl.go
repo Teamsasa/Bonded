@@ -23,10 +23,9 @@ func (u *eventUsecase) EditEvent(ctx context.Context, calendarID string, event *
 	}
 
 	res, err := u.calendarRepo.FindByCalendarID(ctx, calendarID)
-	if (err != nil || res == nil) {
+	if err != nil || res == nil {
 		return nil, err
 	}
-
 
 	exists := u.eventRepo.EventExists(ctx, calendarID, event.EventID)
 	if !exists {

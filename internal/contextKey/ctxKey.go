@@ -1,5 +1,5 @@
 package contextKey
 
-type ctxKey string
+type ctxKey struct{}
 
-const JwtDataKey ctxKey = "jwtData"
+var JwtDataKey = ctxKey{}

@@ -238,6 +238,25 @@ paths:
         '500':
           description: サーバーエラー
 
+  /calendar/public/list:
+    get:
+      tags:
+        - Calendar
+      summary: 公開カレンダー取得
+      responses:
+        '200':
+          description: 公開カレンダーが正常に取得されました
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Calendar'
+        '404':
+          description: 公開カレンダーが見つかりません'
+        '500':
+          description: サーバーエラー
+
   /event/list/{calendarId}:
     get:
       tags:

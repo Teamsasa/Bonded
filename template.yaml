@@ -62,6 +62,12 @@ Resources:
                   Properties:
                     calendarId:
                       Type: string
+        CalendarListPublic:
+          Type: Api
+          Properties:
+            Path: /calendar/list/public
+            Method: GET
+            RestApiId: !Ref BondedApi
         CalendarCreate:
           Type: Api
           Properties:

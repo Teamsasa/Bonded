@@ -12,6 +12,21 @@ func (u *calendarUsecase) FindCalendar(ctx context.Context, calendarID string) (
 	return u.calendarRepo.FindByCalendarID(ctx, calendarID)
 }
 
+func (u *calendarUsecase) FindPublicCalendars(ctx context.Context) ([]*models.Calendar, error) {
+	//全件取得してフィルタリング
+	calendars, err := u.calendarRepo.FindAllCalendars(ctx)
+	if err != nil {
+		return nil, err
+	}
+	publicCalendars := []*models.Calendar{}
+	for _, calendar := range calendars {
+		if *calendar.IsPublic {
+			publicCalendars = append(publicCalendars, calendar)
+		}
+	}
+	return publicCalendars, nil
+}
+
 func (u *calendarUsecase) CreateCalendar(ctx context.Context, calendar *models.CreateCalendar) error {
 	if calendar.OwnerName == "" {
 		user, err := u.userRepo.FindByUserID(ctx, calendar.OwnerUserID)

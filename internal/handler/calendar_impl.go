@@ -12,7 +12,7 @@ import (
 func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendarID := request.PathParameters["calendarId"]
 	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarID)
-	if err != nil {
+	if err != nil || calendar == nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "Error finding calendar: " + err.Error(),
@@ -35,12 +35,40 @@ func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatew
 func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	userID := request.PathParameters["userId"]
 	calendars, err := h.CalendarUsecase.FindCalendars(ctx, userID)
-	if err != nil {
+	if err != nil || calendars == nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "Error finding calendars: " + err.Error(),
 		}, nil
 	}
+	body, err := json.Marshal(calendars)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error marshalling response: " + err.Error(),
+		}, nil
+	}
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       string(body),
+	}, nil
+}
+
+func (h *Handler) HandleGetPublicCalendars(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	calendars, err := h.CalendarUsecase.FindPublicCalendars(ctx)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error finding public calendars: " + err.Error(),
+		}, nil
+	}
+	if calendars == nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 404,
+			Body:       "No public calendars found",
+		}, nil
+	}
+
 	body, err := json.Marshal(calendars)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
@@ -99,7 +127,7 @@ func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGate
 	input.CalendarID = calendarId
 
 	calendar, err := h.CalendarUsecase.FindCalendar(ctx, input.CalendarID)
-	if err != nil {
+	if err != nil || calendar == nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 404,
 			Body:       "Calendar not found",

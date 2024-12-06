@@ -136,9 +136,26 @@ func (h *Handler) HandleDeleteCalendar(ctx context.Context, request events.APIGa
 }
 
 func (h *Handler) HandleFollowCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	calendarId := request.PathParameters["calendarId"]
+	var requestBody struct {
+		CalendarID string `json:"calendarId"`
+	}
+	err := json.Unmarshal([]byte(request.Body), &requestBody)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid request payload: " + err.Error(),
+		}, nil
+	}
+	if requestBody.CalendarID == "" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Missing required fields: calendarId",
+		}, nil
+	}
+
 	userId := request.PathParameters["userId"]
-	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarId)
+
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, requestBody.CalendarID)
 	if err != nil || calendar == nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,

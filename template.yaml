@@ -49,9 +49,19 @@ Resources:
         CalendarFollow:
           Type: Api
           Properties:
-            Path: /calendar/follow/{calendarId}/{userId}
+            Path: /calendar/follow/{userId}
             Method: PUT
             RestApiId: !Ref BondedApi
+            RequestParameters:
+              - Name: requestBody
+                Required: true
+                Schema:
+                  Type: object
+                  Required:
+                    - calendarId
+                  Properties:
+                    calendarId:
+                      Type: string
         CalendarCreate:
           Type: Api
           Properties:

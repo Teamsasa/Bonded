@@ -52,7 +52,7 @@ func main() {
 				if request.HTTPMethod == "GET" {
 					return h.HandleGetCalendars(ctx, request)
 				}
-			case "/calendar/follow/" + request.PathParameters["calendarId"] + "/" + request.PathParameters["userId"]:
+			case "/calendar/follow/" + request.PathParameters["userId"]: // ok
 				if request.HTTPMethod == "PUT" {
 					return h.HandleFollowCalendar(ctx, request)
 				}

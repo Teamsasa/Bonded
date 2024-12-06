@@ -82,6 +82,53 @@ func (h *Handler) HandleGetPublicCalendars(ctx context.Context, request events.A
 	}, nil
 }
 
+func (h *Handler) HandleUnfollowCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var requestBody struct {
+		CalendarID string `json:"calendarId"`
+	}
+	err := json.Unmarshal([]byte(request.Body), &requestBody)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid request payload: " + err.Error(),
+		}, nil
+	}
+	if requestBody.CalendarID == "" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Missing required fields: calendarId",
+		}, nil
+	}
+
+	userId := request.PathParameters["userId"]
+
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, requestBody.CalendarID)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error finding calendar: " + err.Error(),
+		}, nil
+	}
+	if calendar == nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 404,
+			Body:       "Calendar not found",
+		}, nil
+	}
+
+	err = h.CalendarUsecase.UnfollowCalendar(ctx, calendar, userId)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error unfollowing calendar: " + err.Error(),
+		}, nil
+	}
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       `{"message":"Calendar unfollowed successfully."}`,
+	}, nil
+}
+
 func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	var calendar models.CreateCalendar
 	err := json.Unmarshal([]byte(request.Body), &calendar)

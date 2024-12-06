@@ -315,6 +315,7 @@ func (r *calendarRepository) FollowCalendar(ctx context.Context, calendar *model
 		return err
 	}
 	return nil
+}
 
 func (r *calendarRepository) FindAllCalendars(ctx context.Context) ([]*models.Calendar, error) {
 	// カレンダーのメイン情報を全件取得
@@ -345,4 +346,48 @@ func (r *calendarRepository) FindAllCalendars(ctx context.Context) ([]*models.Ca
 		}
 	}
 	return calendars, nil
+}
+
+func (r *calendarRepository) UnfollowCalendar(ctx context.Context, calendar *models.Calendar, user *models.User) error {
+	// メインカレンダーアイテムの更新
+	item, err := dynamodbattribute.MarshalMap(calendar)
+	if err != nil {
+		return err
+	}
+
+	input := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      item,
+	}
+	_, err = r.dynamoDB.PutItemWithContext(ctx, input)
+	if err != nil {
+		return err
+	}
+
+	// 関連アイテムの削除
+	relatedInput := &dynamodb.DeleteItemInput{
+		TableName: aws.String(r.tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"CalendarID": {S: aws.String(calendar.CalendarID)},
+			"SortKey":    {S: aws.String(fmt.Sprintf("CAL#%s#%s", calendar.CalendarID, user.UserID))},
+		},
+	}
+	_, err = r.dynamoDB.DeleteItemWithContext(ctx, relatedInput)
+	if err != nil {
+		return err
+	}
+
+	// ユーザーアイテムの削除
+	userInput := &dynamodb.DeleteItemInput{
+		TableName: aws.String(r.tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"CalendarID": {S: aws.String(calendar.CalendarID)},
+			"SortKey":    {S: aws.String(fmt.Sprintf("USER#%s", user.UserID))},
+		},
+	}
+	_, err = r.dynamoDB.DeleteItemWithContext(ctx, userInput)
+	if err != nil {
+		return err
+	}
+	return nil
 }

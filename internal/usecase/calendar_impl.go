@@ -59,9 +59,12 @@ func (u *calendarUsecase) FindCalendars(ctx context.Context, userID string) ([]*
 
 func (u *calendarUsecase) FollowCalendar(ctx context.Context, calendar *models.Calendar, userID string) error {
 	user, err := u.userRepo.FindByUserID(ctx, userID)
-	if err != nil || user == nil {
-		fmt.Println("user not found")
+	if err != nil {
 		return err
 	}
+	if user == nil {
+		return fmt.Errorf("user not found")
+	}
+
 	return u.calendarRepo.FollowCalendar(ctx, calendar, user)
 }

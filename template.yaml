@@ -126,6 +126,25 @@ Resources:
             Path: /event/edit/{calendarId}
             Method: PUT
             RestApiId: !Ref BondedApi
+        EventDelete:
+          Type: Api
+          Properties:
+            Path: /event/delete
+            Method: DELETE
+            RestApiId: !Ref BondedApi
+            RequestParameters:
+              - Name: requestBody
+                Required: true
+                Schema:
+                  Type: object
+                  Required:
+                    - calendarId
+                    - eventId
+                  Properties:
+                    calendarId:
+                      Type: string
+                    eventId:
+                      Type: string
         EventList:
           Type: Api
           Properties:

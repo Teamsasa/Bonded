@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TABLE_NAME="Calendars"
-ENDPOINT_URL="$DYNAMODB_ENDPOINT"
+ENDPOINT_URL="http://dynamodb.us-west-2.amazonaws.com"
 REGION="us-west-2"
 
 echo "Initializing DynamoDB..."

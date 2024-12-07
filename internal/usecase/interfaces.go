@@ -56,7 +56,7 @@ type CalendarUsecase interface {
 	FindCalendar(ctx context.Context, calendarID string) (*models.Calendar, error)
 	FollowCalendar(ctx context.Context, calendar *models.Calendar) error
 	UnfollowCalendar(ctx context.Context, calendar *models.Calendar) error
-	InviteUser(ctx context.Context, calendarID string, ownerID string, inviteUserID string, accessLevel string) error
+	InviteUser(ctx context.Context, calendarID string, inviteUserID string, accessLevel string) error
 }
 
 type EventUsecase interface {

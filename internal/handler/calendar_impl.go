@@ -1,14 +1,12 @@
 package handler
 
 import (
-	"bonded/internal/contextKey"
 	"bonded/internal/models"
 	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -267,9 +265,6 @@ func (h *Handler) HandleInviteUser(ctx context.Context, request events.APIGatewa
 		}, nil
 	}
 
-	fmt.Println("Inviting user", requestBody.InviteUserID, "to calendar", requestBody.CalendarID, "with access level", requestBody.AccessLevel)
-
-	// アクセスレベルの検証
 	if requestBody.AccessLevel != "EDITOR" && requestBody.AccessLevel != "VIEWER" {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
@@ -277,12 +272,7 @@ func (h *Handler) HandleInviteUser(ctx context.Context, request events.APIGatewa
 		}, nil
 	}
 
-	// トークンからユーザーIDを取得
-	jwtData := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
-	claims := jwtData.Claims.(jwt.MapClaims)
-	userID := claims["sub"].(string)
-
-	err = h.CalendarUsecase.InviteUser(ctx, requestBody.CalendarID, userID, requestBody.InviteUserID, requestBody.AccessLevel)
+	err = h.CalendarUsecase.InviteUser(ctx, requestBody.CalendarID, requestBody.InviteUserID, requestBody.AccessLevel)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,

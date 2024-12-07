@@ -393,9 +393,6 @@ func (r *calendarRepository) UnfollowCalendar(ctx context.Context, calendar *mod
 }
 
 func (r *calendarRepository) InviteUser(ctx context.Context, calendar *models.Calendar, user *models.User) error {
-	fmt.Println("InviteUser")
-	fmt.Println(calendar)
-	fmt.Println(user)
 	// 関連アイテムの作成
 	relatedItem := map[string]*dynamodb.AttributeValue{
 		"CalendarID": {

@@ -5,7 +5,6 @@ import (
 	"bonded/internal/models"
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
@@ -166,9 +165,19 @@ func (u *calendarUsecase) UnfollowCalendar(ctx context.Context, calendar *models
 	return u.calendarRepo.UnfollowCalendar(ctx, calendar, user)
 }
 
-func (u *calendarUsecase) InviteUser(ctx context.Context, calendarID string, ownerID string, inviteUserID string, accessLevel string) error {
+func (u *calendarUsecase) InviteUser(ctx context.Context, calendarID string, inviteUserID string, accessLevel string) error {
 	// カレンダーの取得
-	fmt.Println(calendarID, ownerID, inviteUserID, accessLevel)
+
+	jwtData, ok := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
+	if !ok {
+		return errors.New("failed to get JWT data from context")
+	}
+
+	ownerUserID, ok := jwtData.Claims.(jwt.MapClaims)["sub"].(string)
+	if !ok {
+		return errors.New("failed to get UserID from JWT data")
+	}
+
 	calendar, err := u.calendarRepo.FindByCalendarID(ctx, calendarID)
 	if err != nil {
 		return err
@@ -178,7 +187,7 @@ func (u *calendarUsecase) InviteUser(ctx context.Context, calendarID string, own
 	}
 
 	// 非公開カレンダーの場合、オーナーチェック
-	if !*calendar.IsPublic && calendar.OwnerUserID != ownerID {
+	if !*calendar.IsPublic && calendar.OwnerUserID != ownerUserID {
 		return errors.New("only the owner can invite users to private calendars")
 	}
 

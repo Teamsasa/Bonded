@@ -94,7 +94,6 @@ func main() {
 				}
 			case "/calendar/user/invite":
 				if request.HTTPMethod == "POST" {
-					fmt.Println("invite")
 					return h.HandleInviteUser(ctx, request)
 				}
 			}

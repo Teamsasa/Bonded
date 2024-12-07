@@ -164,3 +164,51 @@ func (u *calendarUsecase) UnfollowCalendar(ctx context.Context, calendar *models
 
 	return u.calendarRepo.UnfollowCalendar(ctx, calendar, user)
 }
+
+func (u *calendarUsecase) InviteUser(ctx context.Context, calendarID string, inviteUserID string, accessLevel string) error {
+	// カレンダーの取得
+
+	jwtData, ok := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
+	if !ok {
+		return errors.New("failed to get JWT data from context")
+	}
+
+	ownerUserID, ok := jwtData.Claims.(jwt.MapClaims)["sub"].(string)
+	if !ok {
+		return errors.New("failed to get UserID from JWT data")
+	}
+
+	calendar, err := u.calendarRepo.FindByCalendarID(ctx, calendarID)
+	if err != nil {
+		return err
+	}
+	if calendar == nil {
+		return errors.New("calendar not found")
+	}
+
+	// オーナーのチェック
+	if calendar.OwnerUserID != ownerUserID {
+		return errors.New("only the owner can invite users")
+	}
+
+	// 招待するユーザーの存在確認
+	inviteUser, err := u.userRepo.FindByUserID(ctx, inviteUserID)
+	if err != nil {
+		return err
+	}
+	if inviteUser == nil {
+		return errors.New("invite user not found")
+	}
+
+	// ユーザーが既に追加されているか確認
+	for _, user := range calendar.Users {
+		if user.UserID == inviteUserID {
+			return errors.New("user is already a member of this calendar")
+		}
+	}
+
+	// ユーザー情報の設定
+	inviteUser.AccessLevel = accessLevel
+
+	return u.calendarRepo.InviteUser(ctx, calendar, inviteUser)
+}

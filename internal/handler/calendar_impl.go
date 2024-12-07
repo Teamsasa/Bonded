@@ -249,3 +249,39 @@ func (h *Handler) HandleFollowCalendar(ctx context.Context, request events.APIGa
 		Body:       `{"message":"Calendar followed successfully."}`,
 	}, nil
 }
+
+func (h *Handler) HandleInviteUser(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var requestBody struct {
+		InviteUserID string `json:"inviteUserId"`
+		CalendarID   string `json:"calendarId"`
+		AccessLevel  string `json:"accessLevel"`
+	}
+
+	err := json.Unmarshal([]byte(request.Body), &requestBody)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid request payload: " + err.Error(),
+		}, nil
+	}
+
+	if requestBody.AccessLevel != "EDITOR" && requestBody.AccessLevel != "VIEWER" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid access level. Must be either 'EDITOR' or 'VIEWER'",
+		}, nil
+	}
+
+	err = h.CalendarUsecase.InviteUser(ctx, requestBody.CalendarID, requestBody.InviteUserID, requestBody.AccessLevel)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error inviting user: " + err.Error(),
+		}, nil
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       `{"message":"User invited successfully"}`,
+	}, nil
+}

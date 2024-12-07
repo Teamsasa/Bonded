@@ -151,6 +151,31 @@ Resources:
             Path: /event/list/{calendarId}
             Method: GET
             RestApiId: !Ref BondedApi
+        CalendarInviteUser:
+          Type: Api
+          Properties:
+            Path: /calendar/user/invite
+            Method: POST
+            RestApiId: !Ref BondedApi
+            RequestParameters:
+              - Name: requestBody
+                Required: true
+                Schema:
+                  Type: object
+                  Required:
+                    - inviteUserId
+                    - calendarId
+                    - accessLevel
+                  Properties:
+                    inviteUserId:
+                      Type: string
+                    calendarId:
+                      Type: string
+                    accessLevel:
+                      Type: string
+                      Enum:
+                        - EDITOR
+                        - VIEWER
 
     Metadata:
       DockerTag: go-provided.al2-v1

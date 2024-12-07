@@ -48,6 +48,7 @@ type EventRepository interface {
 	FindEvents(ctx context.Context, calendarID string) ([]*models.Event, error)
 	EventExists(ctx context.Context, calendarID string, eventID string) bool
 	EditEvent(ctx context.Context, calendarID string, event *models.Event) (*models.Event, error)
+	DeleteEvent(ctx context.Context, calendarID string, eventID string) error
 }
 
 type userRepository struct {

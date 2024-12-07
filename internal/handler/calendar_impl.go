@@ -132,7 +132,6 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 	var calendar models.CreateCalendar
 	err := json.Unmarshal([]byte(request.Body), &calendar)
 	if err != nil {
-		fmt.Printf("calendar: %v\n", calendar)
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
 			Body:       "Invalid request payload: " + err.Error(),

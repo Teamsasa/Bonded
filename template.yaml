@@ -22,12 +22,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
-      Environment:
-        Variables:
-          COGNITO_CLIENT_ID:
-          COGNITO_ISSUER:
-          COGNITO_JWKS_URL:
-          DYNAMODB_ENDPOINT:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: "Calendars"
@@ -52,32 +46,12 @@ Resources:
             Path: /calendar/follow
             Method: PUT
             RestApiId: !Ref BondedApi
-            RequestParameters:
-              - Name: requestBody
-                Required: true
-                Schema:
-                  Type: object
-                  Required:
-                    - calendarId
-                  Properties:
-                    calendarId:
-                      Type: string
         CalendarUnfollow:
           Type: Api
           Properties:
             Path: /calendar/unfollow
             Method: DELETE
             RestApiId: !Ref BondedApi
-            RequestParameters:
-              - Name: requestBody
-                Required: true
-                Schema:
-                  Type: object
-                  Required:
-                    - calendarId
-                  Properties:
-                    calendarId:
-                      Type: string
         CalendarListPublic:
           Type: Api
           Properties:
@@ -132,19 +106,6 @@ Resources:
             Path: /event/delete
             Method: DELETE
             RestApiId: !Ref BondedApi
-            RequestParameters:
-              - Name: requestBody
-                Required: true
-                Schema:
-                  Type: object
-                  Required:
-                    - calendarId
-                    - eventId
-                  Properties:
-                    calendarId:
-                      Type: string
-                    eventId:
-                      Type: string
         EventList:
           Type: Api
           Properties:
@@ -157,37 +118,9 @@ Resources:
             Path: /calendar/user/invite
             Method: POST
             RestApiId: !Ref BondedApi
-            RequestParameters:
-              - Name: requestBody
-                Required: true
-                Schema:
-                  Type: object
-                  Required:
-                    - inviteUserId
-                    - calendarId
-                    - accessLevel
-                  Properties:
-                    inviteUserId:
-                      Type: string
-                    calendarId:
-                      Type: string
-                    accessLevel:
-                      Type: string
-                      Enum:
-                        - EDITOR
-                        - VIEWER
 
     Metadata:
       DockerTag: go-provided.al2-v1
       DockerContext: .
       Dockerfile: Dockerfile
-Outputs:
-  BondedAPI:
-    Description: "API Gateway endpoint URL for Prod environment for Bonded Function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/{proxy+}"
-  BondedFunction:
-    Description: "Bonded Lambda Function ARN"
-    Value: !GetAtt BondedFunction.Arn
-  BondedFunctionIamRole:
-    Description: "Implicit IAM Role created for Bonded function"
-    Value: !GetAtt BondedFunctionRole.Arn
+

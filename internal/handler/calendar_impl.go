@@ -99,8 +99,6 @@ func (h *Handler) HandleUnfollowCalendar(ctx context.Context, request events.API
 		}, nil
 	}
 
-	userId := request.PathParameters["userId"]
-
 	calendar, err := h.CalendarUsecase.FindCalendar(ctx, requestBody.CalendarID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
@@ -115,7 +113,7 @@ func (h *Handler) HandleUnfollowCalendar(ctx context.Context, request events.API
 		}, nil
 	}
 
-	err = h.CalendarUsecase.UnfollowCalendar(ctx, calendar, userId)
+	err = h.CalendarUsecase.UnfollowCalendar(ctx, calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,

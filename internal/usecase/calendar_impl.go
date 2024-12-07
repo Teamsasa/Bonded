@@ -144,7 +144,7 @@ func (u *calendarUsecase) FollowCalendar(ctx context.Context, calendar *models.C
 	return u.calendarRepo.FollowCalendar(ctx, calendar, user)
 }
 
-func (u *calendarUsecase) UnfollowCalendar(ctx context.Context, calendar *models.Calendar, userID string) error {
+func (u *calendarUsecase) UnfollowCalendar(ctx context.Context, calendar *models.Calendar) error {
 	jwtData, ok := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
 	if !ok {
 		return errors.New("failed to get JWT data from context")

@@ -106,7 +106,7 @@ func (h *Handler) HandleGetEventList(ctx context.Context, request events.APIGate
 
 func (h *Handler) HandleDeleteEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	var requestBody struct {
-		EventID string `json:"eventId"`
+		EventID    string `json:"eventId"`
 		CalendarID string `json:"calendarId"`
 	}
 	err := json.Unmarshal([]byte(request.Body), &requestBody)

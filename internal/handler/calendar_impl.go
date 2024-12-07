@@ -162,3 +162,50 @@ func (h *Handler) HandleDeleteCalendar(ctx context.Context, request events.APIGa
 		Body:       `{"message":"Calendar deleted successfully."}`,
 	}, nil
 }
+
+func (h *Handler) HandleFollowCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var requestBody struct {
+		CalendarID string `json:"calendarId"`
+	}
+	err := json.Unmarshal([]byte(request.Body), &requestBody)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid request payload: " + err.Error(),
+		}, nil
+	}
+	if requestBody.CalendarID == "" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Missing required fields: calendarId",
+		}, nil
+	}
+
+	userId := request.PathParameters["userId"]
+
+	calendar, err := h.CalendarUsecase.FindCalendar(ctx, requestBody.CalendarID)
+	if err != nil || calendar == nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error finding calendar: " + err.Error(),
+		}, nil
+	}
+	if !*calendar.IsPublic {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 403,
+			Body:       "Calendar is not public",
+		}, nil
+	}
+
+	err = h.CalendarUsecase.FollowCalendar(ctx, calendar, userId)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error following calendar: " + err.Error(),
+		}, nil
+	}
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       `{"message":"Calendar followed successfully."}`,
+	}, nil
+}

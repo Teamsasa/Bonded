@@ -242,6 +242,80 @@ func (r *calendarRepository) FindByUserID(ctx context.Context, userID string) ([
 	return calendars, nil
 }
 
+func (r *calendarRepository) FollowCalendar(ctx context.Context, calendar *models.Calendar, user *models.User) error {
+	item, err := dynamodbattribute.MarshalMap(calendar)
+	if err != nil {
+		return err
+	}
+
+	// メインカレンダーアイテムの更新
+	input := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      item,
+	}
+
+	_, err = r.dynamoDB.PutItemWithContext(ctx, input)
+	if err != nil {
+		return err
+	}
+
+	// 関連アイテムの作成
+	relatedItem := map[string]*dynamodb.AttributeValue{
+		"CalendarID": {
+			S: aws.String(calendar.CalendarID),
+		},
+		"SortKey": {
+			S: aws.String(fmt.Sprintf("CAL#%s#%s", calendar.CalendarID, user.UserID)),
+		},
+		"UserID": {
+			S: aws.String(user.UserID),
+		},
+	}
+
+	relatedInput := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      relatedItem,
+	}
+	_, err = r.dynamoDB.PutItemWithContext(ctx, relatedInput)
+	if err != nil {
+		return err
+	}
+
+	// ユーザー情報の作成
+	userItem := map[string]*dynamodb.AttributeValue{
+		"Email": {
+			S: aws.String(user.Email),
+		},
+		"CalendarID": {
+			S: aws.String(calendar.CalendarID),
+		},
+		"UserID": {
+			S: aws.String(user.UserID),
+		},
+		"DisplayName": {
+			S: aws.String(user.DisplayName),
+		},
+		"SortKey": {
+			S: aws.String(fmt.Sprintf("USER#%s", user.UserID)),
+		},
+		"AccessLevel": {
+			S: aws.String("VIEWER"),
+		},
+		"Password": {
+			S: aws.String(user.Password),
+		},
+	}
+
+	userInput := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      userItem,
+	}
+	_, err = r.dynamoDB.PutItemWithContext(ctx, userInput)
+	if err != nil {
+		return err
+	}
+	return nil
+
 func (r *calendarRepository) FindAllCalendars(ctx context.Context) ([]*models.Calendar, error) {
 	// カレンダーのメイン情報を全件取得
 	input := &dynamodb.ScanInput{

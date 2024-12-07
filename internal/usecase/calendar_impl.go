@@ -59,6 +59,17 @@ func (u *calendarUsecase) FindPublicCalendars(ctx context.Context) ([]*models.Ca
 }
 
 func (u *calendarUsecase) CreateCalendar(ctx context.Context, calendar *models.CreateCalendar) error {
+
+	jwtData, ok := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
+	if !ok {
+		return errors.New("failed to get JWT data from context")
+	}
+
+	accessUserID, ok := jwtData.Claims.(jwt.MapClaims)["sub"].(string)
+	if !ok {
+		return errors.New("failed to get UserID from JWT data")
+	}
+	calendar.OwnerUserID = accessUserID
 	if calendar.OwnerName == "" {
 		user, err := u.userRepo.FindByUserID(ctx, calendar.OwnerUserID)
 		if err != nil {
@@ -99,12 +110,30 @@ func (u *calendarUsecase) DeleteCalendar(ctx context.Context, calendarID string)
 	return u.calendarRepo.Delete(ctx, calendarID)
 }
 
-func (u *calendarUsecase) FindCalendars(ctx context.Context, userID string) ([]*models.Calendar, error) {
-	return u.calendarRepo.FindByUserID(ctx, userID)
+func (u *calendarUsecase) FindCalendars(ctx context.Context) ([]*models.Calendar, error) {
+	jwtData, ok := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
+	if !ok {
+		return nil, errors.New("failed to get JWT data from context")
+	}
+
+	accessUserID, ok := jwtData.Claims.(jwt.MapClaims)["sub"].(string)
+	if !ok {
+		return nil, errors.New("failed to get UserID from JWT data")
+	}
+	return u.calendarRepo.FindByUserID(ctx, accessUserID)
 }
 
-func (u *calendarUsecase) FollowCalendar(ctx context.Context, calendar *models.Calendar, userID string) error {
-	user, err := u.userRepo.FindByUserID(ctx, userID)
+func (u *calendarUsecase) FollowCalendar(ctx context.Context, calendar *models.Calendar) error {
+	jwtData, ok := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
+	if !ok {
+		return errors.New("failed to get JWT data from context")
+	}
+
+	accessUserID, ok := jwtData.Claims.(jwt.MapClaims)["sub"].(string)
+	if !ok {
+		return errors.New("failed to get UserID from JWT data")
+	}
+	user, err := u.userRepo.FindByUserID(ctx, accessUserID)
 	if err != nil {
 		return err
 	}
@@ -115,8 +144,17 @@ func (u *calendarUsecase) FollowCalendar(ctx context.Context, calendar *models.C
 	return u.calendarRepo.FollowCalendar(ctx, calendar, user)
 }
 
-func (u *calendarUsecase) UnfollowCalendar(ctx context.Context, calendar *models.Calendar, userID string) error {
-	user, err := u.userRepo.FindByUserID(ctx, userID)
+func (u *calendarUsecase) UnfollowCalendar(ctx context.Context, calendar *models.Calendar) error {
+	jwtData, ok := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
+	if !ok {
+		return errors.New("failed to get JWT data from context")
+	}
+
+	accessUserID, ok := jwtData.Claims.(jwt.MapClaims)["sub"].(string)
+	if !ok {
+		return errors.New("failed to get UserID from JWT data")
+	}
+	user, err := u.userRepo.FindByUserID(ctx, accessUserID)
 	if err != nil {
 		return err
 	}

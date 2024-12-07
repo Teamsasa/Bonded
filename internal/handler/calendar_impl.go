@@ -33,8 +33,7 @@ func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatew
 }
 
 func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	userID := request.PathParameters["userId"]
-	calendars, err := h.CalendarUsecase.FindCalendars(ctx, userID)
+	calendars, err := h.CalendarUsecase.FindCalendars(ctx)
 	if err != nil || calendars == nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -100,8 +99,6 @@ func (h *Handler) HandleUnfollowCalendar(ctx context.Context, request events.API
 		}, nil
 	}
 
-	userId := request.PathParameters["userId"]
-
 	calendar, err := h.CalendarUsecase.FindCalendar(ctx, requestBody.CalendarID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
@@ -116,7 +113,7 @@ func (h *Handler) HandleUnfollowCalendar(ctx context.Context, request events.API
 		}, nil
 	}
 
-	err = h.CalendarUsecase.UnfollowCalendar(ctx, calendar, userId)
+	err = h.CalendarUsecase.UnfollowCalendar(ctx, calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -145,8 +142,6 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 			Body:       "Missing required fields: name or isPublic",
 		}, nil
 	}
-	userID := request.PathParameters["userId"]
-	calendar.OwnerUserID = userID
 
 	err = h.CalendarUsecase.CreateCalendar(ctx, &calendar)
 	if err != nil {
@@ -228,8 +223,6 @@ func (h *Handler) HandleFollowCalendar(ctx context.Context, request events.APIGa
 		}, nil
 	}
 
-	userId := request.PathParameters["userId"]
-
 	calendar, err := h.CalendarUsecase.FindCalendar(ctx, requestBody.CalendarID)
 	if err != nil || calendar == nil {
 		return events.APIGatewayProxyResponse{
@@ -244,7 +237,7 @@ func (h *Handler) HandleFollowCalendar(ctx context.Context, request events.APIGa
 		}, nil
 	}
 
-	err = h.CalendarUsecase.FollowCalendar(ctx, calendar, userId)
+	err = h.CalendarUsecase.FollowCalendar(ctx, calendar)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,

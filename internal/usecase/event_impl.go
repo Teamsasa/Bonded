@@ -41,8 +41,11 @@ func (u *eventUsecase) DeleteEvent(ctx context.Context, calendarID string, event
 	}
 
 	res, err := u.calendarRepo.FindByCalendarID(ctx, calendarID)
-	if err != nil || res == nil {
+	if err != nil {
 		return err
+	}
+	if res == nil {
+		return errors.New("calendar not found")
 	}
 
 	exists := u.eventRepo.EventExists(ctx, calendarID, eventID)

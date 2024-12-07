@@ -15,10 +15,10 @@ type DynamoDBClient struct {
 func DynamoDBClientRequest() *DynamoDBClient {
 	endpoint := os.Getenv("DYNAMODB_ENDPOINT")
 	if endpoint == "" {
-		endpoint = "http://host.docker.internal:8000"
+		endpoint = "http://dynamodb.us-west-2.amazonaws.com"
 	}
 	sess := session.Must(session.NewSession(&aws.Config{
-		Region:   aws.String("ap-northeast-1"),
+		Region:   aws.String("us-west-2"),
 		Endpoint: aws.String(endpoint),
 	}))
 	return &DynamoDBClient{

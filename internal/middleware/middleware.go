@@ -15,16 +15,27 @@ type IAuthMiddleware interface {
 
 type authMiddleware struct {
 	authUsecase usecase.IAuthUsecase
+	publicPaths map[string]bool
 }
 
 func NewAuthMiddleware(authUsecase usecase.IAuthUsecase) IAuthMiddleware {
+	publicPaths := map[string]bool{
+		"/hello":                true,
+		"/calendar/list/public": true,
+	}
+
 	return &authMiddleware{
 		authUsecase: authUsecase,
+		publicPaths: publicPaths,
 	}
 }
 
 func (am *authMiddleware) AuthMiddleware(next func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)) func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+		if am.publicPaths[request.Path] {
+			return next(ctx, request)
+		}
+
 		authHeader, ok := request.Headers["Authorization"]
 		if !ok || !strings.HasPrefix(authHeader, "Bearer ") {
 			return unauthorizedResponse("Missing or invalid Authorization header")

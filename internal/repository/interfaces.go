@@ -41,6 +41,7 @@ type CalendarRepository interface {
 	FindByUserID(ctx context.Context, userID string) ([]*models.Calendar, error)
 	UnfollowCalendar(ctx context.Context, calendar *models.Calendar, user *models.User) error
 	FollowCalendar(ctx context.Context, calendar *models.Calendar, user *models.User) error
+	InviteUser(ctx context.Context, calendar *models.Calendar, user *models.User) error
 }
 
 type EventRepository interface {

@@ -398,6 +398,66 @@ paths:
         '500':
           description: サーバーエラー
 
+  /calendar/user/invite:
+    post:
+      tags:
+        - Calendar
+      summary: カレンダーにユーザーを招待
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - inviteUserId
+                - calendarId
+                - accessLevel
+              properties:
+                inviteUserId:
+                  type: string
+                  description: 招待するユーザーのID
+                calendarId:
+                  type: string
+                  description: カレンダーID
+                accessLevel:
+                  type: string
+                  enum: [EDITOR, VIEWER]
+                  description: 付与する権限レベル
+      responses:
+        '200':
+          description: ユーザーが正常に招待されました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User invited successfully"
+        '400':
+          description: リクエストが無効です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid access level. Must be either 'EDITOR' or 'VIEWER'"
+        '403':
+          description: 権限がありません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Only the owner can invite users to private calendars"
+        '500':
+          description: サーバーエラー
+
 components:
   schemas:
     Calendar:

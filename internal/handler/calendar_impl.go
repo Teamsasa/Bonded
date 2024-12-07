@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"bonded/internal/contextKey"
 	"bonded/internal/models"
 	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -254,5 +256,49 @@ func (h *Handler) HandleFollowCalendar(ctx context.Context, request events.APIGa
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
 		Body:       `{"message":"Calendar followed successfully."}`,
+	}, nil
+}
+
+func (h *Handler) HandleInviteUser(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var requestBody struct {
+		InviteUserID string `json:"inviteUserId"`
+		CalendarID   string `json:"calendarId"`
+		AccessLevel  string `json:"accessLevel"`
+	}
+
+	err := json.Unmarshal([]byte(request.Body), &requestBody)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid request payload: " + err.Error(),
+		}, nil
+	}
+
+	fmt.Println("Inviting user", requestBody.InviteUserID, "to calendar", requestBody.CalendarID, "with access level", requestBody.AccessLevel)
+
+	// アクセスレベルの検証
+	if requestBody.AccessLevel != "EDITOR" && requestBody.AccessLevel != "VIEWER" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid access level. Must be either 'EDITOR' or 'VIEWER'",
+		}, nil
+	}
+
+	// トークンからユーザーIDを取得
+	jwtData := ctx.Value(contextKey.JwtDataKey).(*jwt.Token)
+	claims := jwtData.Claims.(jwt.MapClaims)
+	userID := claims["sub"].(string)
+
+	err = h.CalendarUsecase.InviteUser(ctx, requestBody.CalendarID, userID, requestBody.InviteUserID, requestBody.AccessLevel)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error inviting user: " + err.Error(),
+		}, nil
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       `{"message":"User invited successfully"}`,
 	}, nil
 }

@@ -5,6 +5,7 @@ import (
 	"bonded/internal/models"
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
@@ -125,4 +126,42 @@ func (u *calendarUsecase) UnfollowCalendar(ctx context.Context, calendar *models
 	}
 
 	return u.calendarRepo.UnfollowCalendar(ctx, calendar, user)
+}
+
+func (u *calendarUsecase) InviteUser(ctx context.Context, calendarID string, ownerID string, inviteUserID string, accessLevel string) error {
+	// カレンダーの取得
+	fmt.Println(calendarID, ownerID, inviteUserID, accessLevel)
+	calendar, err := u.calendarRepo.FindByCalendarID(ctx, calendarID)
+	if err != nil {
+		return err
+	}
+	if calendar == nil {
+		return errors.New("calendar not found")
+	}
+
+	// 非公開カレンダーの場合、オーナーチェック
+	if !*calendar.IsPublic && calendar.OwnerUserID != ownerID {
+		return errors.New("only the owner can invite users to private calendars")
+	}
+
+	// 招待するユーザーの存在確認
+	inviteUser, err := u.userRepo.FindByUserID(ctx, inviteUserID)
+	if err != nil {
+		return err
+	}
+	if inviteUser == nil {
+		return errors.New("invite user not found")
+	}
+
+	// ユーザーが既に追加されているか確認
+	for _, user := range calendar.Users {
+		if user.UserID == inviteUserID {
+			return errors.New("user is already a member of this calendar")
+		}
+	}
+
+	// ユーザー情報の設定
+	inviteUser.AccessLevel = accessLevel
+
+	return u.calendarRepo.InviteUser(ctx, calendar, inviteUser)
 }

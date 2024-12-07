@@ -92,6 +92,11 @@ func main() {
 				if request.HTTPMethod == "GET" {
 					return h.HandleGetEventList(ctx, request)
 				}
+			case "/calendar/user/invite":
+				if request.HTTPMethod == "POST" {
+					fmt.Println("invite")
+					return h.HandleInviteUser(ctx, request)
+				}
 			}
 			return events.APIGatewayProxyResponse{
 				StatusCode: 404,

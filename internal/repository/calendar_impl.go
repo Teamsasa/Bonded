@@ -391,3 +391,62 @@ func (r *calendarRepository) UnfollowCalendar(ctx context.Context, calendar *mod
 	}
 	return nil
 }
+
+func (r *calendarRepository) InviteUser(ctx context.Context, calendar *models.Calendar, user *models.User) error {
+	fmt.Println("InviteUser")
+	fmt.Println(calendar)
+	fmt.Println(user)
+	// 関連アイテムの作成
+	relatedItem := map[string]*dynamodb.AttributeValue{
+		"CalendarID": {
+			S: aws.String(calendar.CalendarID),
+		},
+		"SortKey": {
+			S: aws.String(fmt.Sprintf("CAL#%s#%s", calendar.CalendarID, user.UserID)),
+		},
+		"UserID": {
+			S: aws.String(user.UserID),
+		},
+	}
+
+	relatedInput := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      relatedItem,
+	}
+	_, err := r.dynamoDB.PutItemWithContext(ctx, relatedInput)
+	if err != nil {
+		return err
+	}
+
+	// ユーザー情報の作成
+	userItem := map[string]*dynamodb.AttributeValue{
+		"Email": {
+			S: aws.String(user.Email),
+		},
+		"CalendarID": {
+			S: aws.String(calendar.CalendarID),
+		},
+		"UserID": {
+			S: aws.String(user.UserID),
+		},
+		"DisplayName": {
+			S: aws.String(user.DisplayName),
+		},
+		"SortKey": {
+			S: aws.String(fmt.Sprintf("USER#%s", user.UserID)),
+		},
+		"AccessLevel": {
+			S: aws.String(user.AccessLevel),
+		},
+		"Password": {
+			S: aws.String(user.Password),
+		},
+	}
+
+	userInput := &dynamodb.PutItemInput{
+		TableName: aws.String(r.tableName),
+		Item:      userItem,
+	}
+	_, err = r.dynamoDB.PutItemWithContext(ctx, userInput)
+	return err
+}

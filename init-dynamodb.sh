@@ -76,7 +76,7 @@ if [ $? -ne 0 ]; then
 
         # ユーザー情報の挿入
         if [ "$CALENDAR" == "1" ]; then
-            USERS=("77949ad8-1081-70fa-6c03-b07440f1a407")
+            USERS=("user1")
         else
             USERS=("user1" "user2")
         fi

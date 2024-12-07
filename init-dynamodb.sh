@@ -7,7 +7,7 @@ REGION="us-west-2"
 echo "Initializing DynamoDB Local..."
 
 # テーブルの存在確認
-aws dynamodb describe-table --table-name "$TABLE_NAME" --endpoint-url "$"$ENDPOINT_URL"" --region REGION > /dev/null 2>&1
+aws dynamodb describe-table --table-name "$TABLE_NAME" --endpoint-url "$ENDPOINT_URL" --region "$REGION" > /dev/null 2>&1
 
 if [ $? -ne 0 ]; then
     echo "Creating DynamoDB table '$TABLE_NAME'..."
@@ -38,7 +38,7 @@ if [ $? -ne 0 ]; then
                 }
             ]" \
         --endpoint-url "$ENDPOINT_URL" \
-        --region REGION \
+        --region "$REGION" \
         > create_table.log 2>&1
 
     if [ $? -ne 0 ]; then
@@ -47,7 +47,7 @@ if [ $? -ne 0 ]; then
     fi
 
     echo "Waiting for the table to be active..."
-    aws dynamodb wait table-exists --table-name "$TABLE_NAME" --endpoint-url "$ENDPOINT_URL" --region REGION \
+    aws dynamodb wait table-exists --table-name "$TABLE_NAME" --endpoint-url "$ENDPOINT_URL" --region "$REGION" \
         >> create_table.log 2>&1
 
     if [ $? -ne 0 ]; then
@@ -73,7 +73,7 @@ if [ $? -ne 0 ]; then
                 \"OwnerUserID\": {\"S\": \"user1\"}
             }" \
             --endpoint-url "$ENDPOINT_URL" \
-            --region REGION \
+            --region "$REGION" \
             >> insert_data.log 2>&1
 
         # ユーザー情報の挿入
@@ -96,7 +96,7 @@ if [ $? -ne 0 ]; then
                     \"AccessLevel\": {\"S\": \"OWNER\"}
                 }" \
                 --endpoint-url "$ENDPOINT_URL" \
-                --region REGION \
+                --region "$REGION" \
                 >> insert_data.log 2>&1
 
             # GSI用のカレンダー情報の挿入を修正
@@ -108,7 +108,7 @@ if [ $? -ne 0 ]; then
                     \"UserID\": {\"S\": \"$USER\"}
                 }" \
                 --endpoint-url "$ENDPOINT_URL" \
-                --region REGION \
+                --region "$REGION" \
                 >> insert_data.log 2>&1
         done
 
@@ -129,7 +129,7 @@ if [ $? -ne 0 ]; then
                     \"AllDay\": {\"BOOL\": false}
                 }" \
                 --endpoint-url "$ENDPOINT_URL" \
-                --region REGION \
+                --region "$REGION" \
                 >> insert_data.log 2>&1
         done
     done

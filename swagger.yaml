@@ -1,9 +1,10 @@
-openapi: 3.0.0
+swagger: '2.0'
 info:
   title: Calendar API
   version: 1.0.0
-servers:
-  - url: http://localhost:3000
+host: localhost:3000
+schemes:
+  - http
 tags:
   - name: Calendar
     description: カレンダー関連のAPI
@@ -15,38 +16,36 @@ paths:
       tags:
         - Calendar
       summary: カレンダー作成
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-                - isPublic
-              properties:
-                name:
-                  type: string
-                isPublic:
-                  type: boolean
-                users:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/User'
-                events:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/EventModel'
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - name
+              - isPublic
+            properties:
+              name:
+                type: string
+              isPublic:
+                type: boolean
+              users:
+                type: array
+                items:
+                  $ref: '#/definitions/User'
+              events:
+                type: array
+                items:
+                  $ref: '#/definitions/EventModel'
       responses:
         '201':
           description: カレンダーが正常に作成されました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         '400':
           description: リクエストが無効です
         '500':
@@ -61,15 +60,12 @@ paths:
         - name: calendarId
           in: path
           required: true
-          schema:
-            type: string
+          type: string
       responses:
         '200':
           description: カレンダー情報が正常に取得されました
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Calendar'
+          schema:
+            $ref: '#/definitions/Calendar'
         '404':
           description: カレンダーが見つかりません
         '500':
@@ -80,27 +76,25 @@ paths:
       tags:
         - Calendar
       summary: カレンダーフォロー
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - calendarId
-              properties:
-                calendarId:
-                  type: string
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - calendarId
+            properties:
+              calendarId:
+                type: string
       responses:
         '200':
           description: カレンダーが正常にフォローされました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         '400':
           description: リクエストが無効です
         '403':
@@ -117,31 +111,27 @@ paths:
         - name: calendarId
           in: path
           required: true
+          type: string
+        - in: body
+          name: body
+          required: true
           schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                isPublic:
-                  type: boolean
-                ownerUserId:
-                  type: string
+            type: object
+            properties:
+              name:
+                type: string
+              isPublic:
+                type: boolean
+              ownerUserId:
+                type: string
       responses:
         '200':
           description: カレンダーが正常に編集されました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         '400':
           description: リクエストが無効です
         '500':
@@ -156,18 +146,15 @@ paths:
         - name: calendarId
           in: path
           required: true
-          schema:
-            type: string
+          type: string
       responses:
         '200':
           description: カレンダーが正常に削除されました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         '500':
           description: サーバーエラー
 
@@ -176,27 +163,25 @@ paths:
       tags:
         - Calendar
       summary: 公開カレンダーのフォロー解除
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - calendarId
-              properties:
-                calendarId:
-                  type: string
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - calendarId
+            properties:
+              calendarId:
+                type: string
       responses:
         '200':
           description: 公開カレンダーのフォローが正常に解除されました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         '400':
           description: リクエストが無効です
         '404':
@@ -212,12 +197,10 @@ paths:
       responses:
         '200':
           description: ユーザーのカレンダーが正常に取得されました
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Calendar'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Calendar'
         '500':
           description: サーバーエラー
 
@@ -230,24 +213,20 @@ paths:
         - name: calendarId
           in: path
           required: true
+          type: string
+        - in: body
+          name: body
+          required: true
           schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EventModel'
+            $ref: '#/definitions/EventModel'
       responses:
         '201':
           description: イベントが正常に作成されました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         '400':
           description: リクエストが無効です
         '500':
@@ -261,14 +240,12 @@ paths:
       responses:
         '200':
           description: 公開カレンダーが正常に取得されました
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Calendar'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Calendar'
         '404':
-          description: 公開カレンダーが見つかりません'
+          description: 公開カレンダーが見つかりません
         '500':
           description: サーバーエラー
 
@@ -281,22 +258,19 @@ paths:
         - name: calendarId
           in: path
           required: true
-          schema:
-            type: string
+          type: string
       responses:
         '201':
           description: カレンダーのイベント一覧が正常に取得されました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         '500':
           description: サーバーエラー
 
-  /calendar/{calendarId}/event:
+  /event/edit/{calendarId}:
     put:
       tags:
         - Event
@@ -305,81 +279,69 @@ paths:
         - name: calendarId
           in: path
           required: true
+          type: string
+        - in: body
+          name: body
+          required: true
           schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EventEdit'
+            $ref: '#/definitions/EventEdit'
       responses:
         '200':
           description: 正常に更新されました
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventEdit'
+          schema:
+            $ref: '#/definitions/EventEdit'
         '400':
           description: リクエストが不正です
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Error unmarshalling request: <error message>"
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Error unmarshalling request: <error message>"
         '404':
           description: イベントが見つかりません
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Event not found"
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Event not found"
         '500':
           description: サーバーエラー
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Error editing event: <error message>"
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Error editing event: <error message>"
 
   /event/delete:
     delete:
       tags:
         - Event
       summary: イベント削除
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - calendarId
-                - eventId
-              properties:
-                calendarId:
-                  type: string
-                eventId:
-                  type: string
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - calendarId
+              - eventId
+            properties:
+              calendarId:
+                type: string
+              eventId:
+                type: string
       responses:
         '200':
           description: イベントが正常に削除されました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         '400':
           description: リクエストが無効です
         '500':
@@ -390,135 +352,128 @@ paths:
       tags:
         - Calendar
       summary: カレンダーにユーザーを招待
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - inviteUserId
-                - calendarId
-                - accessLevel
-              properties:
-                inviteUserId:
-                  type: string
-                  description: 招待するユーザーのID
-                calendarId:
-                  type: string
-                  description: カレンダーID
-                accessLevel:
-                  type: string
-                  enum: [EDITOR, VIEWER]
-                  description: 付与する権限レベル
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - inviteUserId
+              - calendarId
+              - accessLevel
+            properties:
+              inviteUserId:
+                type: string
+                description: 招待するユーザーのID
+              calendarId:
+                type: string
+                description: カレンダーID
+              accessLevel:
+                type: string
+                enum: [EDITOR, VIEWER]
+                description: 付与する権限レベル
       responses:
         '200':
           description: ユーザーが正常に招待されました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "User invited successfully"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "User invited successfully"
         '400':
           description: リクエストが無効です
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Invalid access level. Must be either 'EDITOR' or 'VIEWER'"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Invalid access level. Must be either 'EDITOR' or 'VIEWER'"
         '403':
           description: 権限がありません
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Only the owner can invite users to private calendars"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Only the owner can invite users to private calendars"
         '500':
           description: サーバーエラー
 
-components:
-  schemas:
-    Calendar:
-      type: object
-      properties:
-        calendarId:
-          type: string
-        sortKey:
-          type: string
-        name:
-          type: string
-        isPublic:
-          type: boolean
-        ownerUserId:
-          type: string
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventModel'
-    User:
-      type: object
-      properties:
-        userId:
-          type: string
-        displayName:
-          type: string
-        accessLevel:
-          type: string
-    EventModel:
-      type: object
-      properties:
-        eventId:
-          type: string
-        title:
-          type: string
-        description:
-          type: string
-        startTime:
-          type: string
-        endTime:
-          type: string
-        location:
-          type: string
-        allDay:
-          type: boolean
-    EventEdit:
-      type: object
-      required:
-        - eventId
-      properties:
-        eventId:
-          type: string
-          example: "event1"
-        title:
-          type: string
-          example: "Test Event event1"
-        description:
-          type: string
-          example: "This is test event event1"
-        startTime:
-          type: string
-          format: date-time
-          example: "2021-08-01T00:00:00Z"
-        endTime:
-          type: string
-          format: date-time
-          example: "2021-08-01T01:00:00Z"
-        location:
-          type: string
-          example: "場所event1"
-        allDay:
-          type: boolean
-          example: false
+definitions:
+  Calendar:
+    type: object
+    properties:
+      calendarId:
+        type: string
+      sortKey:
+        type: string
+      name:
+        type: string
+      isPublic:
+        type: boolean
+      ownerUserId:
+        type: string
+      users:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/EventModel'
+  User:
+    type: object
+    properties:
+      userId:
+        type: string
+      displayName:
+        type: string
+      accessLevel:
+        type: string
+  EventModel:
+    type: object
+    properties:
+      eventId:
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+      startTime:
+        type: string
+      endTime:
+        type: string
+      location:
+        type: string
+      allDay:
+        type: boolean
+  EventEdit:
+    type: object
+    required:
+      - eventId
+    properties:
+      eventId:
+        type: string
+        example: "event1"
+      title:
+        type: string
+        example: "Test Event event1"
+      description:
+        type: string
+        example: "This is test event event1"
+      startTime:
+        type: string
+        format: date-time
+        example: "2021-08-01T00:00:00Z"
+      endTime:
+        type: string
+        format: date-time
+        example: "2021-08-01T01:00:00Z"
+      location:
+        type: string
+        example: "場所event1"
+      allDay:
+        type: boolean
+        example: false

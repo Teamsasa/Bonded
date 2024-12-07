@@ -68,11 +68,11 @@ func main() {
 				if request.HTTPMethod == "POST" {
 					return h.HandleCreateCalendar(ctx, request)
 				}
-			case "/calendar/edit/" + request.PathParameters["calendarId"]: // ok 今は誰でも編集できる状態になっているので、呼び出す時にEDITORかどうかを見たい
+			case "/calendar/edit/" + request.PathParameters["calendarId"]:
 				if request.HTTPMethod == "PUT" {
 					return h.HandleEditCalendar(ctx, request)
 				}
-			case "/calendar/delete/" + request.PathParameters["calendarId"]: // ok
+			case "/calendar/delete/" + request.PathParameters["calendarId"]:
 				if request.HTTPMethod == "DELETE" {
 					return h.HandleDeleteCalendar(ctx, request)
 				}

@@ -84,6 +84,10 @@ func main() {
 				if request.HTTPMethod == "PUT" {
 					return h.HandleEditEvent(ctx, request)
 				}
+			case "/event/delete":
+				if request.HTTPMethod == "DELETE" {
+					return h.HandleDeleteEvent(ctx, request)
+				}
 			case "/event/list/" + request.PathParameters["calendarId"]:
 				if request.HTTPMethod == "GET" {
 					return h.HandleGetEventList(ctx, request)

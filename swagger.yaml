@@ -364,6 +364,40 @@ paths:
                     type: string
                     example: "Error editing event: <error message>"
 
+  /event/delete:
+    delete:
+      tags:
+        - Event
+      summary: イベント削除
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - calendarId
+                - eventId
+              properties:
+                calendarId:
+                  type: string
+                eventId:
+                  type: string
+      responses:
+        '200':
+          description: イベントが正常に削除されました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: リクエストが無効です
+        '500':
+          description: サーバーエラー
+
 components:
   schemas:
     Calendar:

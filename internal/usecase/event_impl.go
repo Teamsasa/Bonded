@@ -23,8 +23,11 @@ func (u *eventUsecase) EditEvent(ctx context.Context, calendarID string, event *
 	}
 
 	res, err := u.calendarRepo.FindByCalendarID(ctx, calendarID)
-	if err != nil || res == nil {
+	if err != nil {
 		return nil, err
+	}
+	if res == nil {
+		return nil, errors.New("calendar not found")
 	}
 
 	exists := u.eventRepo.EventExists(ctx, calendarID, event.EventID)
@@ -33,4 +36,25 @@ func (u *eventUsecase) EditEvent(ctx context.Context, calendarID string, event *
 	}
 
 	return u.eventRepo.EditEvent(ctx, calendarID, event)
+}
+
+func (u *eventUsecase) DeleteEvent(ctx context.Context, calendarID string, eventID string) error {
+	if eventID == "" {
+		return errors.New("eventID is required")
+	}
+
+	res, err := u.calendarRepo.FindByCalendarID(ctx, calendarID)
+	if err != nil {
+		return err
+	}
+	if res == nil {
+		return errors.New("calendar not found")
+	}
+
+	exists := u.eventRepo.EventExists(ctx, calendarID, eventID)
+	if !exists {
+		return errors.New("event not found")
+	}
+
+	return u.eventRepo.DeleteEvent(ctx, calendarID, eventID)
 }

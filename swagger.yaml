@@ -183,6 +183,34 @@ paths:
         '500':
           description: サーバーエラー
 
+  /calendar/unfollow/{userId}:
+    delete:
+      tags:
+        - Calendar
+      summary: 公開カレンダーのフォロー解除
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 公開カレンダーのフォローが正常に解除されました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: リクエストが無効です
+        '404':
+          description: 公開カレンダーが見つかりません
+        '500':
+          description: サーバーエラー
+
   /calendar/list/{userId}:
     get:
       tags:

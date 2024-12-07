@@ -83,3 +83,15 @@ func (u *calendarUsecase) FollowCalendar(ctx context.Context, calendar *models.C
 
 	return u.calendarRepo.FollowCalendar(ctx, calendar, user)
 }
+
+func (u *calendarUsecase) UnfollowCalendar(ctx context.Context, calendar *models.Calendar, userID string) error {
+	user, err := u.userRepo.FindByUserID(ctx, userID)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("user not found")
+	}
+
+	return u.calendarRepo.UnfollowCalendar(ctx, calendar, user)
+}

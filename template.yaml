@@ -62,6 +62,22 @@ Resources:
                   Properties:
                     calendarId:
                       Type: string
+        CalendarUnfollow:
+          Type: Api
+          Properties:
+            Path: /calendar/unfollow/{userId}
+            Method: DELETE
+            RestApiId: !Ref BondedApi
+            RequestParameters:
+              - Name: requestBody
+                Required: true
+                Schema:
+                  Type: object
+                  Required:
+                    - calendarId
+                  Properties:
+                    calendarId:
+                      Type: string
         CalendarListPublic:
           Type: Api
           Properties:

@@ -18,7 +18,7 @@ func DynamoDBClientRequest() *DynamoDBClient {
 		endpoint = "http://host.docker.internal:8000"
 	}
 	sess := session.Must(session.NewSession(&aws.Config{
-		Region:   aws.String("ap-northeast-1"),
+		Region:   aws.String("us-west-2"),
 		Endpoint: aws.String(endpoint),
 	}))
 	return &DynamoDBClient{

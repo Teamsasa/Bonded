@@ -44,15 +44,15 @@ func main() {
 				if request.HTTPMethod == "GET" {
 					return h.HelloHandler(ctx, request)
 				}
-			case "/calendar/" + request.PathParameters["calendarId"]: // ok
+			case "/calendar/" + request.PathParameters["calendarId"]:
 				if request.HTTPMethod == "GET" {
 					return h.HandleGetCalendar(ctx, request)
 				}
-			case "/calendar/list/" + request.PathParameters["userId"]: // ok
+			case "/calendar/list":
 				if request.HTTPMethod == "GET" {
 					return h.HandleGetCalendars(ctx, request)
 				}
-			case "/calendar/follow/" + request.PathParameters["userId"]: // ok
+			case "/calendar/follow":
 				if request.HTTPMethod == "PUT" {
 					return h.HandleFollowCalendar(ctx, request)
 				}
@@ -60,11 +60,11 @@ func main() {
 				if request.HTTPMethod == "GET" {
 					return h.HandleGetPublicCalendars(ctx, request)
 				}
-			case "/calendar/unfollow/" + request.PathParameters["userId"]: // ok
+			case "/calendar/unfollow":
 				if request.HTTPMethod == "DELETE" {
 					return h.HandleUnfollowCalendar(ctx, request)
 				}
-			case "/calendar/create/" + request.PathParameters["userId"]: // ok
+			case "/calendar/create":
 				if request.HTTPMethod == "POST" {
 					return h.HandleCreateCalendar(ctx, request)
 				}

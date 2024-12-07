@@ -89,8 +89,6 @@ if [ $? -ne 0 ]; then
                     \"SortKey\": {\"S\": \"USER#$USER\"},
                     \"UserID\": {\"S\": \"$USER\"},
                     \"DisplayName\": {\"S\": \"${USER}の表示名\"},
-                    \"Email\": {\"S\": \"${USER}@example.com\"},
-                    \"Password\": {\"S\": \"password\"},
                     \"AccessLevel\": {\"S\": \"OWNER\"}
                 }" \
                 --endpoint-url http://localhost:8000 \

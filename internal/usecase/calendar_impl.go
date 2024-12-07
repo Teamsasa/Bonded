@@ -80,8 +80,6 @@ func (u *calendarUsecase) CreateCalendar(ctx context.Context, calendar *models.C
 	user := models.User{
 		UserID:      calendar.OwnerUserID,
 		DisplayName: calendar.OwnerName,
-		Email:       calendar.OwnerUserID + "@example.com",
-		Password:    "password",
 		AccessLevel: "OWNER",
 	}
 	calendar.Users = []models.User{user}

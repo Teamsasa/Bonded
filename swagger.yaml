@@ -475,10 +475,6 @@ components:
           type: string
         displayName:
           type: string
-        email:
-          type: string
-        password:
-          type: string
         accessLevel:
           type: string
     EventModel:

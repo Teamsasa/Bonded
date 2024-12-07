@@ -12,10 +12,17 @@ import (
 func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendarID := request.PathParameters["calendarId"]
 	calendar, err := h.CalendarUsecase.FindCalendar(ctx, calendarID)
-	if err != nil || calendar == nil {
+	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "Error finding calendar: " + err.Error(),
+		}, nil
+	}
+
+	if calendar == nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 404,
+			Body:       "Calendar not found",
 		}, nil
 	}
 
@@ -34,10 +41,16 @@ func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatew
 
 func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	calendars, err := h.CalendarUsecase.FindCalendars(ctx)
-	if err != nil || calendars == nil {
+	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "Error finding calendars: " + err.Error(),
+		}, nil
+	}
+	if calendars == nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 404,
+			Body:       "No calendars found",
 		}, nil
 	}
 	body, err := json.Marshal(calendars)

@@ -10,17 +10,11 @@ tags:
   - name: Event
     description: イベント関連のAPI
 paths:
-  /calendar/create/{userId}:
+  /calendar/create:
     post:
       tags:
         - Calendar
       summary: カレンダー作成
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -81,17 +75,11 @@ paths:
         '500':
           description: サーバーエラー
 
-  /calendar/follow/{userId}:
+  /calendar/follow:
     put:
       tags:
         - Calendar
       summary: カレンダーフォロー
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -183,17 +171,22 @@ paths:
         '500':
           description: サーバーエラー
 
-  /calendar/unfollow/{userId}:
+  /calendar/unfollow:
     delete:
       tags:
         - Calendar
       summary: 公開カレンダーのフォロー解除
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - calendarId
+              properties:
+                calendarId:
+                  type: string
       responses:
         '200':
           description: 公開カレンダーのフォローが正常に解除されました
@@ -211,17 +204,11 @@ paths:
         '500':
           description: サーバーエラー
 
-  /calendar/list/{userId}:
+  /calendar/list:
     get:
       tags:
         - Calendar
       summary: ユーザーのカレンダー取得
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: ユーザーのカレンダーが正常に取得されました

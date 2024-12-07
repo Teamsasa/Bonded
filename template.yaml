@@ -43,13 +43,13 @@ Resources:
         CalendarList:
           Type: Api
           Properties:
-            Path: /calendar/list/{userId}
+            Path: /calendar/list
             Method: GET
             RestApiId: !Ref BondedApi
         CalendarFollow:
           Type: Api
           Properties:
-            Path: /calendar/follow/{userId}
+            Path: /calendar/follow
             Method: PUT
             RestApiId: !Ref BondedApi
             RequestParameters:
@@ -65,7 +65,7 @@ Resources:
         CalendarUnfollow:
           Type: Api
           Properties:
-            Path: /calendar/unfollow/{userId}
+            Path: /calendar/unfollow
             Method: DELETE
             RestApiId: !Ref BondedApi
             RequestParameters:
@@ -87,7 +87,7 @@ Resources:
         CalendarCreate:
           Type: Api
           Properties:
-            Path: /calendar/create/{userId}
+            Path: /calendar/create
             Method: POST
             RestApiId: !Ref BondedApi
         CalendarEdit:

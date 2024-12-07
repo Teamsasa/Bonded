@@ -13,7 +13,8 @@ func CalendarUsecaseRequest(calendarRepo repository.CalendarRepository, eventRep
 			userRepo:     userRepo,
 		},
 		eventUsecase: &eventUsecase{
-			eventRepo: eventRepo,
+			eventRepo:    eventRepo,
+			calendarRepo: calendarRepo,
 		},
 	}
 }
@@ -29,7 +30,8 @@ type calendarUsecase struct {
 }
 
 type eventUsecase struct {
-	eventRepo repository.EventRepository
+	eventRepo    repository.EventRepository
+	calendarRepo repository.CalendarRepository
 }
 
 type Usecase interface {
@@ -59,4 +61,5 @@ type CalendarUsecase interface {
 type EventUsecase interface {
 	CreateEvent(ctx context.Context, calendar *models.Calendar, event *models.Event) error
 	FindEvents(ctx context.Context, calendarID string) ([]*models.Event, error)
+	EditEvent(ctx context.Context, calendarID string, event *models.Event) (*models.Event, error)
 }

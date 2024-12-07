@@ -188,7 +188,7 @@ func (u *calendarUsecase) InviteUser(ctx context.Context, calendarID string, inv
 
 	// オーナーのチェック
 	if calendar.OwnerUserID != ownerUserID {
-		return errors.New("only the owner can invite users to private calendars")
+		return errors.New("only the owner can invite users")
 	}
 
 	// 招待するユーザーの存在確認

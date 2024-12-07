@@ -17,6 +17,7 @@ compose-up: ## Start Docker containers
 
 dynamodb-init: ## Initialize DynamoDB Local using an external script
 	@./init-dynamodb.sh
+	@./init-local-dynamodb.sh
 
 sam-api: ## Start SAM API
 	sam local start-api --env-vars env.json --docker-network bonded_default

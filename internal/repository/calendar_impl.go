@@ -64,9 +64,6 @@ func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calend
 
 	// 3. ユーザーアイテムの作成
 	userItem := map[string]*dynamodb.AttributeValue{
-		"Email": {
-			S: aws.String(calendar.Users[0].Email),
-		},
 		"CalendarID": {
 			S: aws.String(calendar.CalendarID),
 		},
@@ -81,9 +78,6 @@ func (r *calendarRepository) Create(ctx context.Context, calendar *models.Calend
 		},
 		"AccessLevel": {
 			S: aws.String(calendar.Users[0].AccessLevel),
-		},
-		"Password": {
-			S: aws.String(calendar.Users[0].Password),
 		},
 	}
 
@@ -283,9 +277,6 @@ func (r *calendarRepository) FollowCalendar(ctx context.Context, calendar *model
 
 	// ユーザー情報の作成
 	userItem := map[string]*dynamodb.AttributeValue{
-		"Email": {
-			S: aws.String(user.Email),
-		},
 		"CalendarID": {
 			S: aws.String(calendar.CalendarID),
 		},
@@ -300,9 +291,6 @@ func (r *calendarRepository) FollowCalendar(ctx context.Context, calendar *model
 		},
 		"AccessLevel": {
 			S: aws.String("VIEWER"),
-		},
-		"Password": {
-			S: aws.String(user.Password),
 		},
 	}
 
@@ -417,9 +405,6 @@ func (r *calendarRepository) InviteUser(ctx context.Context, calendar *models.Ca
 
 	// ユーザー情報の作成
 	userItem := map[string]*dynamodb.AttributeValue{
-		"Email": {
-			S: aws.String(user.Email),
-		},
 		"CalendarID": {
 			S: aws.String(calendar.CalendarID),
 		},
@@ -434,9 +419,6 @@ func (r *calendarRepository) InviteUser(ctx context.Context, calendar *models.Ca
 		},
 		"AccessLevel": {
 			S: aws.String(user.AccessLevel),
-		},
-		"Password": {
-			S: aws.String(user.Password),
 		},
 	}
 

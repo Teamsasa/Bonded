@@ -186,8 +186,8 @@ func (u *calendarUsecase) InviteUser(ctx context.Context, calendarID string, inv
 		return errors.New("calendar not found")
 	}
 
-	// 非公開カレンダーの場合、オーナーチェック
-	if !*calendar.IsPublic && calendar.OwnerUserID != ownerUserID {
+	// オーナーのチェック
+	if calendar.OwnerUserID != ownerUserID {
 		return errors.New("only the owner can invite users to private calendars")
 	}
 

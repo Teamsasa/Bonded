@@ -4,6 +4,7 @@ import (
 	"bonded/internal/contextKey"
 	"bonded/internal/usecase"
 	"context"
+	"regexp"
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -15,13 +16,14 @@ type IAuthMiddleware interface {
 
 type authMiddleware struct {
 	authUsecase usecase.IAuthUsecase
-	publicPaths map[string]bool
+	publicPaths map[string]*regexp.Regexp
 }
 
 func NewAuthMiddleware(authUsecase usecase.IAuthUsecase) IAuthMiddleware {
-	publicPaths := map[string]bool{
-		"/hello":                true,
-		"/calendar/list/public": true,
+	publicPaths := map[string]*regexp.Regexp{
+		"/hello":                regexp.MustCompile(`^/hello$`),
+		"/calendar/list/public": regexp.MustCompile(`^/calendar/list/public$`),
+		"/calendar/":            regexp.MustCompile(`^/calendar/[0-9a-fA-F-]+$`),
 	}
 
 	return &authMiddleware{
@@ -32,8 +34,10 @@ func NewAuthMiddleware(authUsecase usecase.IAuthUsecase) IAuthMiddleware {
 
 func (am *authMiddleware) AuthMiddleware(next func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)) func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-		if am.publicPaths[request.Path] {
-			return next(ctx, request)
+		for _, re := range am.publicPaths {
+			if re.MatchString(request.Path) {
+				return next(ctx, request)
+			}
 		}
 
 		authHeader, ok := request.Headers["Authorization"]

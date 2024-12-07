@@ -1,4 +1,4 @@
-.PHONY: help start-all stop-all start-sam-api start-dynamodb dynamodb-init build fmt clean
+.PHONY: help start-all stop-all start-sam-api start-dynamodb local-dynamodb-init build fmt clean remote-dynamodb-init
 
 # Default target
 .DEFAULT_GOAL := help
@@ -15,8 +15,7 @@ help: ## Display this help message
 compose-up: ## Start Docker containers
 	docker-compose up -d --force-recreate
 
-dynamodb-init: ## Initialize DynamoDB Local using an external script
-	@./init-dynamodb.sh
+local-dynamodb-init: ## Initialize DynamoDB Local using an external script
 	@./init-local-dynamodb.sh
 
 sam-api: ## Start SAM API
@@ -26,7 +25,7 @@ build: ## Build SAM application
 	go mod tidy                        # 依存関係を整理
 	sam build                          # SAMビルドを実行
 
-start-all: compose-up dynamodb-init build sam-api ## Start and initialize DynamoDB, build SAM application, then start SAM API
+start-all: compose-up local-dynamodb-init build sam-api ## Start and initialize Local DynamoDB, build SAM application, then start SAM API
 
 compose-down: ## Stop and remove Docker containers
 	docker-compose down
@@ -36,3 +35,6 @@ fmt: ## Format all Go code files
 
 clean: ## Clean build artifacts
 	rm -rf .aws-sam
+
+remote-dynamodb-init: ## Initialize Remote DynamoDB using an external script
+	@./init-dynamodb.sh

@@ -103,3 +103,30 @@ func (h *Handler) HandleGetEventList(ctx context.Context, request events.APIGate
 		Body:       string(body),
 	}, nil
 }
+
+func (h *Handler) HandleDeleteEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var requestBody struct {
+		EventID string `json:"eventId"`
+		CalendarID string `json:"calendarId"`
+	}
+	err := json.Unmarshal([]byte(request.Body), &requestBody)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 400,
+			Body:       "Invalid request payload: " + err.Error(),
+		}, nil
+	}
+
+	err = h.EventUsecase.DeleteEvent(ctx, requestBody.CalendarID, requestBody.EventID)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error deleting event: " + err.Error(),
+		}, nil
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       `{"message":"Event deleted successfully."}`,
+	}, nil
+}

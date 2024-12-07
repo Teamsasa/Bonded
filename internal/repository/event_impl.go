@@ -121,6 +121,19 @@ func (r *eventRepository) EditEvent(ctx context.Context, calendarID string, even
 	return &updatedEvent, nil
 }
 
+func (r *eventRepository) DeleteEvent(ctx context.Context, calendarID string, eventID string) error {
+	input := &dynamodb.DeleteItemInput{
+		TableName: aws.String(r.tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"CalendarID": {S: aws.String(calendarID)},
+			"SortKey":    {S: aws.String("EVENT#" + eventID)},
+		},
+	}
+
+	_, err := r.dynamoDB.DeleteItemWithContext(ctx, input)
+	return err
+}
+
 func buildUpdateExpression(event *models.Event) (string, map[string]*string, map[string]*dynamodb.AttributeValue) {
 	return "SET Title = :title, Description = :desc, StartTime = :startTime, EndTime = :endTime, #location = :location, AllDay = :allDay",
 		map[string]*string{

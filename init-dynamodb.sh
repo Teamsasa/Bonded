@@ -1,10 +1,10 @@
 #!/bin/bash
 
 TABLE_NAME="Calendars"
-ENDPOINT_URL="http://dynamodb.us-west-2.amazonaws.com"
+ENDPOINT_URL="http://localhost:8000"
 REGION="us-west-2"
 
-echo "Initializing DynamoDB REMOTE..."
+echo "Initializing DynamoDB Local..."
 
 # テーブルの存在確認
 aws dynamodb describe-table --table-name "$TABLE_NAME" --endpoint-url ENDPOINT_URL --region REGION > /dev/null 2>&1

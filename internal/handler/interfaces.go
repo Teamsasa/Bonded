@@ -24,7 +24,12 @@ func HandlerRequest(usecase usecase.Usecase) *Handler {
 func (h *Handler) HelloHandler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	greeting := usecase.GetGreeting(ctx, request.RequestContext.Identity.SourceIP)
 	return events.APIGatewayProxyResponse{
-		Body:       greeting,
+		Body: greeting,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
 		StatusCode: 200,
 	}, nil
 }

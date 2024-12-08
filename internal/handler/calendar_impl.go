@@ -47,12 +47,6 @@ func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGate
 			Body:       "Error finding calendars: " + err.Error(),
 		}, nil
 	}
-	if calendars == nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 404,
-			Body:       "No calendars found",
-		}, nil
-	}
 	body, err := json.Marshal(calendars)
 	if err != nil {
 		return events.APIGatewayProxyResponse{

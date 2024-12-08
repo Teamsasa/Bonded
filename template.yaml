@@ -22,12 +22,12 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
-      # Environment:
-      #   Variables:
-      #     COGNITO_CLIENT_ID:
-      #     COGNITO_ISSUER:
-      #     COGNITO_JWKS_URL:
-      #     DYNAMODB_ENDPOINT:
+      Environment:
+        Variables:
+          COGNITO_CLIENT_ID:
+          COGNITO_ISSUER:
+          COGNITO_JWKS_URL:
+          DYNAMODB_ENDPOINT:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: "Calendars"

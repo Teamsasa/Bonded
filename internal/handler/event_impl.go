@@ -44,7 +44,12 @@ func (h *Handler) HandleCreateEvent(ctx context.Context, request events.APIGatew
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
-		Body:       `{"message":"Event created successfully."}`,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: `{"message":"Event created successfully."}`,
 	}, nil
 }
 
@@ -77,7 +82,12 @@ func (h *Handler) HandleEditEvent(ctx context.Context, request events.APIGateway
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       string(updatedEventJSON),
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: string(updatedEventJSON),
 	}, nil
 }
 
@@ -100,7 +110,12 @@ func (h *Handler) HandleGetEventList(ctx context.Context, request events.APIGate
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       string(body),
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: string(body),
 	}, nil
 }
 
@@ -127,6 +142,11 @@ func (h *Handler) HandleDeleteEvent(ctx context.Context, request events.APIGatew
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       `{"message":"Event deleted successfully."}`,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: `{"message":"Event deleted successfully."}`,
 	}, nil
 }

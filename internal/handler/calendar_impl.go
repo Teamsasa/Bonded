@@ -35,7 +35,12 @@ func (h *Handler) HandleGetCalendar(ctx context.Context, request events.APIGatew
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       string(body),
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: string(body),
 	}, nil
 }
 
@@ -56,7 +61,12 @@ func (h *Handler) HandleGetCalendars(ctx context.Context, request events.APIGate
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       string(body),
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: string(body),
 	}, nil
 }
 
@@ -84,7 +94,12 @@ func (h *Handler) HandleGetPublicCalendars(ctx context.Context, request events.A
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       string(body),
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: string(body),
 	}, nil
 }
 
@@ -129,7 +144,12 @@ func (h *Handler) HandleUnfollowCalendar(ctx context.Context, request events.API
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       `{"message":"Calendar unfollowed successfully."}`,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: `{"message":"Calendar unfollowed successfully."}`,
 	}, nil
 }
 
@@ -159,7 +179,12 @@ func (h *Handler) HandleCreateCalendar(ctx context.Context, request events.APIGa
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
-		Body:       `{"message":"Calendar created successfully."}`,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: `{"message":"Calendar created successfully."}`,
 	}, nil
 }
 
@@ -193,7 +218,12 @@ func (h *Handler) HandleEditCalendar(ctx context.Context, request events.APIGate
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       `{"message":"Calendar edited successfully."}`,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: `{"message":"Calendar edited successfully."}`,
 	}, nil
 }
 
@@ -208,7 +238,12 @@ func (h *Handler) HandleDeleteCalendar(ctx context.Context, request events.APIGa
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       `{"message":"Calendar deleted successfully."}`,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: `{"message":"Calendar deleted successfully."}`,
 	}, nil
 }
 
@@ -253,7 +288,12 @@ func (h *Handler) HandleFollowCalendar(ctx context.Context, request events.APIGa
 	}
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       `{"message":"Calendar followed successfully."}`,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: `{"message":"Calendar followed successfully."}`,
 	}, nil
 }
 
@@ -289,6 +329,11 @@ func (h *Handler) HandleInviteUser(ctx context.Context, request events.APIGatewa
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       `{"message":"User invited successfully"}`,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type,Authorization,X-ID-Token",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+		},
+		Body: `{"message":"User invited successfully"}`,
 	}, nil
 }

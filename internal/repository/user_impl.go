@@ -35,7 +35,12 @@ func (r *userRepository) FindByUserID(ctx context.Context, userID string) (*mode
 		return nil, err
 	}
 
-	// 最初の要素をユーザーの名前とする
-	user := users[0]
-	return &user, nil
+	for _, user := range users {
+		if user.DisplayName != "" && user.AccessLevel != "" {
+			fmt.Printf("Selected user: %v\n", user)
+			return &user, nil
+		}
+	}
+
+	return nil, fmt.Errorf("valid user with UserID %s not found", userID)
 }
